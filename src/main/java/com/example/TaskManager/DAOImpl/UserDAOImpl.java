@@ -15,7 +15,7 @@ public class UserDAOImpl implements UserDAO {
 
     JdbcTemplate jdbcTemplate;
 
-    private final String SQL_FIND_USER = "select * from users where id = ?";
+    private final String SQL_FIND_USER = "select * from users where login = ?";
     private final String SQL_DELETE_USER = "delete from users where id = ?";
     private final String SQL_UPDATE_USER = "update users set login = ?, password = ?, role  = ? where id = ?";
     private final String SQL_GET_ALL = "select * from users";
@@ -27,13 +27,13 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User getUserById(Long id) {
-        return jdbcTemplate.queryForObject(SQL_FIND_USER, new Object[] { id }, new UserMapper());
+    public List<User> getAllUsers() {
+        return jdbcTemplate.query(SQL_GET_ALL, new UserMapper());
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return jdbcTemplate.query(SQL_GET_ALL, new UserMapper());
+    public User getUserByLogin(String login) {
+        return jdbcTemplate.queryForObject(SQL_FIND_USER, new Object[] { login }, new UserMapper());
     }
 
     @Override
