@@ -1,4 +1,4 @@
-package com.example.TaskManager.DAOImpl;
+package com.example.TaskManager.DAO.DAOImpl;
 
 import com.example.TaskManager.DAO.UserDAO;
 import com.example.TaskManager.model.User;
@@ -15,11 +15,13 @@ public class UserDAOImpl implements UserDAO {
 
     JdbcTemplate jdbcTemplate;
 
-    private final String SQL_FIND_USER = "select * from users where login = ?";
+    private final String SQL_FIND_USER_BY_LOGIN = "select * from users where login = ?";
+    private final String SQL_FIND_USER_BY_ID = "select * from users where id = ?";
     private final String SQL_DELETE_USER = "delete from users where id = ?";
     private final String SQL_UPDATE_USER = "update users set login = ?, password = ?, role  = ? where id = ?";
     private final String SQL_GET_ALL = "select * from users";
     private final String SQL_INSERT_USER = "insert into users (login, password, role) values(?,?,?)";
+    private final String SQL_FIND_USER_BY_TICKET = "SELECT * FROM users, tickets WHERE users.id = tickets.executor_id AND tickets.executor_id = ?";
 
     @Autowired
     public UserDAOImpl(DataSource dataSource) {
@@ -32,8 +34,18 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public List<User> getUsersFromTicket(Long executor_id) {
+        return jdbcTemplate.query(SQL_FIND_USER_BY_TICKET, new Object[] {executor_id}, new UserMapper());
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return jdbcTemplate.queryForObject(SQL_FIND_USER_BY_ID, new Object[] {id}, new UserMapper());
+    }
+
+    @Override
     public User getUserByLogin(String login) {
-        return jdbcTemplate.queryForObject(SQL_FIND_USER, new Object[] { login }, new UserMapper());
+        return jdbcTemplate.queryForObject(SQL_FIND_USER_BY_LOGIN, new Object[] { login }, new UserMapper());
     }
 
     @Override

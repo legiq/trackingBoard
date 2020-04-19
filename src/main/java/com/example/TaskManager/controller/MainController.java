@@ -1,9 +1,9 @@
 package com.example.TaskManager.controller;
 
+import com.example.TaskManager.DAO.DAOImpl.TicketDAOImpl;
+import com.example.TaskManager.DAO.DAOImpl.UserDAOImpl;
 import com.example.TaskManager.DAO.TicketDAO;
 import com.example.TaskManager.DAO.UserDAO;
-import com.example.TaskManager.DAOImpl.TicketDAOImpl;
-import com.example.TaskManager.DAOImpl.UserDAOImpl;
 import com.example.TaskManager.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,24 +42,24 @@ public class MainController {
     public String add(
             @RequestParam String label,
             @RequestParam(required = false, defaultValue = "No info") String description,
-            @RequestParam String creator_login,
-            @RequestParam String executor_login,
+            @RequestParam Long creator_id,
+            @RequestParam Long executor_id,
             @RequestParam(required = false, defaultValue = "None") String type,
             @RequestParam(required = false, defaultValue = "None") String status,
             @RequestParam(required = false, defaultValue = "None") String components,
             Model model
     ) {
 
-        User creator = userDAO.getUserByLogin(creator_login);
-        User executor = userDAO.getUserByLogin(executor_login);
+        User creator = userDAO.getUserById(creator_id);
+        User executor = userDAO.getUserById(executor_id);
 
         if (label != null && !label.isEmpty() && creator != null && executor != null) {
 
             List<User> executors = new ArrayList<>();
             executors.add(executor);
 
-            List<Component> componentsList = Stream.of(components.split(" "))
-                    .map(Component::valueOf)
+            List<Components> componentsList = Stream.of(components.split(" "))
+                    .map(Components::valueOf)
                     .collect(Collectors.toList());
 
             Ticket ticket = new Ticket(label, description, creator,

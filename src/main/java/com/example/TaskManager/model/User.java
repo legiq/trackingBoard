@@ -21,7 +21,7 @@ public class User {
     @Override
     public String toString() {
         return String.format(
-                "Customer[id=%d, login='%s', password='%s', role='%s']",
+                "User[id=%d, login='%s', password='%s', role='%s']",
                 id, login, password, role.toString());
     }
 }

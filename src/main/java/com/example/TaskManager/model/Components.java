@@ -1,5 +1,5 @@
 package com.example.TaskManager.model;
 
-public enum Component {
+public enum Components {
     Frontend, Backend, DataScience, None
 }

@@ -5,6 +5,7 @@ import com.example.TaskManager.model.Type;
 import com.example.TaskManager.model.User;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public interface TicketDAO {
@@ -13,7 +14,7 @@ public interface TicketDAO {
 
     Ticket getTicketByType(Type type);
 
-    Ticket getTicketByTime(LocalDateTime time);
+    Ticket getTicketByTime(Date time);
 
     Ticket getTicketByCreator(User user);
 
