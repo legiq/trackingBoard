@@ -24,7 +24,8 @@ public class Ticket {
 
     public Ticket(String label, String description, User creator,
                   List<User> executors, Type type, Status status,
-                  List<Components> components) {
+                  List<Components> components
+    ) {
         this.label = label;
         this.description = description;
         this.creator = creator;

@@ -2,26 +2,65 @@ package com.example.TaskManager.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Data
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails {
 
     private long id;
-    private String login;
+    private String username;
     private String password;
     private Role role;
+    private boolean active;
 
-    public User (String login, String password, Role role) {
-        this.login = login;
+    public User (String login, String password, Role role, boolean active) {
+        this.username = login;
         this.password = password;
         this.role = role;
+        this.active = active;
     }
 
     @Override
     public String toString() {
         return String.format(
-                "User[id=%d, login='%s', password='%s', role='%s']",
-                id, login, password, role.toString());
+                "User[id=%d, login='%s', password='%s', role='%s', active='%s']",
+                id, username, password, role.toString(), active);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        ArrayList<Role> roles = new ArrayList<>();
+        roles.add(role);
+        return roles;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isActive();
     }
 }

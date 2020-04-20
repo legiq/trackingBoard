@@ -15,13 +15,14 @@ public class UserDAOImpl implements UserDAO {
 
     JdbcTemplate jdbcTemplate;
 
-    private final String SQL_FIND_USER_BY_LOGIN = "select * from users where login = ?";
+    private final String SQL_FIND_USER_BY_LOGIN = "select * from public.users where login = ?";
     private final String SQL_FIND_USER_BY_ID = "select * from users where id = ?";
     private final String SQL_DELETE_USER = "delete from users where id = ?";
-    private final String SQL_UPDATE_USER = "update users set login = ?, password = ?, role  = ? where id = ?";
+    private final String SQL_UPDATE_USER = "update users set login = ?, password = ?, role  = ?, active = ? where id = ?";
     private final String SQL_GET_ALL = "select * from users";
-    private final String SQL_INSERT_USER = "insert into users (login, password, role) values(?,?,?)";
-    private final String SQL_FIND_USER_BY_TICKET = "SELECT * FROM users, tickets WHERE users.id = tickets.executor_id AND tickets.executor_id = ?";
+    private final String SQL_INSERT_USER = "insert into users (login, password, role, active) values(?,?,?,?)";
+    private final String SQL_FIND_USER_BY_TICKET = "SELECT * FROM users, tickets " +
+            "WHERE users.id = tickets.executor_id AND tickets.executor_id = ?";
 
     @Autowired
     public UserDAOImpl(DataSource dataSource) {
@@ -55,13 +56,13 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateUser(User user) {
-        return jdbcTemplate.update(SQL_UPDATE_USER, user.getLogin(), user.getPassword(), user.getRole(),
-                user.getId()) > 0;
+        return jdbcTemplate.update(SQL_UPDATE_USER, user.getUsername(), user.getPassword(), user.getRole(),
+                user.isActive(), user.getId()) > 0;
     }
 
     @Override
     public boolean addUser(User user) {
-        return jdbcTemplate.update(SQL_INSERT_USER, user.getLogin(), user.getPassword(),
-                user.getRole().toString()) > 0;
+        return jdbcTemplate.update(SQL_INSERT_USER, user.getUsername(), user.getPassword(),
+                user.getRole().toString(), user.isActive()) > 0;
     }
 }

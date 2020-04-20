@@ -17,8 +17,6 @@ import java.util.List;
 @Component
 public class TicketDAOImpl implements TicketDAO {
 
-    JdbcTemplate jdbcTemplate;
-    UserDAO userDAO;
 
     private final String SQL_GET_ALL = "select * from tickets";
     private final String SQL_FIND_TICKET_BY_TYPE = "select * from tickets where type = ?";
@@ -31,10 +29,12 @@ public class TicketDAOImpl implements TicketDAO {
             "(label, description, creator_id, executor_id, type, status, components, time) " +
             "values(?,?,?,?,?,?,?,?)";
 
+
+    private JdbcTemplate jdbcTemplate;
+
     @Autowired
-    public TicketDAOImpl(DataSource dataSource, UserDAOImpl userDAO) {
+    public TicketDAOImpl(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        this.userDAO = userDAO;
     }
 
     private TicketMapper ticketMapper = new TicketMapper();
