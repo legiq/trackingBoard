@@ -1,24 +1,43 @@
+<#include "parts/security.ftlh">
 <#import "parts/common.ftlh" as c>
-<#import "parts/login.ftlh" as l>
 
 <@c.page>
     <div>
-        <@l.logout />
-        <div>Add new ticket</div>
-        <form method="post">
-            <input type="text" name="label" placeholder="Enter label">
-            <input type="text" name="description" placeholder="Enter description">
-            <input type="text" name="creator_id" placeholder="Enter creator id">
-            <input type="text" name="executor_id" placeholder="Enter executor id">
-            <input type="text" name="type" placeholder="Enter type">
-            <input type="text" name="status" placeholder="Enter status">
-            <input type="text" name="components" placeholder="Enter components in format '1 2 3'">
-            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-            <button type="submit">Save</button>
-            <div>
-                <a href="/task">Task</a>
+        <#if user.role = "Developer">
+            <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button"
+               aria-expanded="false"
+               aria-controls="collapseExample">
+                Add new ticket
+            </a>
+            <div class="collapse" id="collapseExample">
+                <div class="form-group mt-3">
+                    <form method="post">
+                        <div class="form-group float-left">
+                            <input type="text" name="label" placeholder="Enter label">
+                        </div>
+                        <div class="form-group float-left">
+                            <input type="text" name="description" placeholder="Enter description">
+                        </div>
+                        <div class="form-group float-left">
+                            <input type="text" name="executor_login" placeholder="Enter executor login">
+                        </div>
+                        <div class="form-group float-left">
+                            <input type="text" name="type" placeholder="Enter type">
+                        </div>
+                        <div class="form-group float-left">
+                            <input type="text" name="status" placeholder="Enter status">
+                        </div>
+                        <div class="form-group float-left">
+                            <input type="text" name="components" placeholder="Enter components">
+                        </div>
+                        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary m-2">Save</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </form>
+        </#if>
     </div>
     <div class="float-left m-3">
         <table class="table table-bordered table-striped m-2 fixed">
@@ -36,7 +55,16 @@
                     <#list tickets as ticket>
                         <#if ticket.status = "ToDo">
                             <div class="form-group">
-                                <div>${ticket.label}</div>
+                                <a href="/ticket/${ticket.id}">${ticket.label}</a>
+                                <#if ticket.creator.username = name>
+                                    <div>
+                                        <form method="post" action="/delete">
+                                            <input type="hidden" name="ticket_id" value="${ticket.id}">
+                                            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                                            <button type="submit" class="btn btn-primary">Delete</button>
+                                        </form>
+                                    </div>
+                                </#if>
                             </div>
                         </#if>
                     </#list>
@@ -61,7 +89,16 @@
                     <#list tickets as ticket>
                         <#if ticket.status = "InProgress">
                             <div class="form-group">
-                                <div>${ticket.label}</div>
+                                <a href="/ticket/${ticket.id}">${ticket.label}</a>
+                                <#if ticket.creator.username = name>
+                                    <div>
+                                        <form method="post" action="/delete">
+                                            <input type="hidden" name="ticket_id" value="${ticket.id}">
+                                            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                                            <button type="submit" class="btn btn-primary">Delete</button>
+                                        </form>
+                                    </div>
+                                </#if>
                             </div>
                         </#if>
                     </#list>
@@ -86,7 +123,16 @@
                     <#list tickets as ticket>
                         <#if ticket.status = "InTest">
                             <div class="form-group">
-                                <div>${ticket.label}</div>
+                                <a href="/ticket/${ticket.id}">${ticket.label}</a>
+                                <#if ticket.creator.username = name>
+                                    <div>
+                                        <form method="post" action="/delete">
+                                            <input type="hidden" name="ticket_id" value="${ticket.id}">
+                                            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                                            <button type="submit" class="btn btn-primary">Delete</button>
+                                        </form>
+                                    </div>
+                                </#if>
                             </div>
                         </#if>
                     </#list>
@@ -111,7 +157,16 @@
                     <#list tickets as ticket>
                         <#if ticket.status = "Done">
                             <div class="form-group">
-                                <div>${ticket.label}</div>
+                                <a href="/ticket/${ticket.id}">${ticket.label}</a>
+                                <#if ticket.creator.username = name>
+                                    <div>
+                                        <form method="post" action="/delete">
+                                            <input type="hidden" name="ticket_id" value="${ticket.id}">
+                                            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                                            <button type="submit" class="btn btn-primary">Delete</button>
+                                        </form>
+                                    </div>
+                                </#if>
                             </div>
                         </#if>
                     </#list>

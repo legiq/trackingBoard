@@ -18,7 +18,8 @@ public class User implements UserDetails {
     private Role role;
     private boolean active;
 
-    public User (String login, String password, Role role, boolean active) {
+    public User (Long id, String login, String password, Role role, boolean active) {
+        this.id = id;
         this.username = login;
         this.password = password;
         this.role = role;

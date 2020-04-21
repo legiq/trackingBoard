@@ -11,6 +11,8 @@ public interface TicketDAO {
 
     List<Ticket> getAllTickets();
 
+    Ticket getTicketById(Long id);
+
     Ticket getTicketByType(Type type);
 
     Ticket getTicketByTime(Date time);

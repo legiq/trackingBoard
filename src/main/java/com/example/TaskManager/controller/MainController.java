@@ -6,6 +6,7 @@ import com.example.TaskManager.dao.TicketDAO;
 import com.example.TaskManager.dao.UserDAO;
 import com.example.TaskManager.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,20 +41,19 @@ public class MainController {
 
     @PostMapping("/main")
     public String add(
+            @AuthenticationPrincipal User user,
             @RequestParam String label,
             @RequestParam(required = false, defaultValue = "No info") String description,
-            @RequestParam Long creator_id,
-            @RequestParam Long executor_id,
-            @RequestParam(required = false, defaultValue = "None") String type,
-            @RequestParam(required = false, defaultValue = "None") String status,
+            @RequestParam String executor_login,
+            @RequestParam String type,
+            @RequestParam String status,
             @RequestParam(required = false, defaultValue = "None") String components,
             Model model
     ) {
 
-        User creator = userDAO.getUserById(creator_id);
-        User executor = userDAO.getUserById(executor_id);
+        User executor = userDAO.getUserByLogin(executor_login);
 
-        if (label != null && !label.isEmpty() && creator != null && executor != null) {
+        if (label != null && !label.isEmpty() && user != null && executor != null) {
 
             List<User> executors = new ArrayList<>();
             executors.add(executor);
@@ -62,7 +62,7 @@ public class MainController {
                     .map(Components::valueOf)
                     .collect(Collectors.toList());
 
-            Ticket ticket = new Ticket(label, description, creator,
+            Ticket ticket = new Ticket(label, description, user,
                     executors, Type.valueOf(type), Status.valueOf(status),
                     componentsList);
 
@@ -74,5 +74,17 @@ public class MainController {
         model.addAttribute("tickets", tickets);
 
         return "main";
+    }
+
+    @PostMapping("/delete")
+    public String delete(
+            @RequestParam Long ticket_id
+    ) {
+
+        Ticket ticket = ticketDAO.getTicketById(ticket_id);
+
+        ticketDAO.deleteTicket(ticket);
+
+        return "redirect:/main";
     }
 }

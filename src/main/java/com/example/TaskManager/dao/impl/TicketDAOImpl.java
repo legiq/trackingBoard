@@ -18,6 +18,7 @@ public class TicketDAOImpl implements TicketDAO {
 
 
     private final String SQL_GET_ALL = "select * from tickets";
+    private final String SQL_FIND_TICKET_BY_ID = "select * from tickets where id = ?";
     private final String SQL_FIND_TICKET_BY_TYPE = "select * from tickets where type = ?";
     private final String SQL_FIND_TICKET_BY_TIME = "select * from tickets where time = ?";
     private final String SQL_FIND_TICKET_BY_CREATOR = "select * from tickets where creator_id = ?";
@@ -44,9 +45,13 @@ public class TicketDAOImpl implements TicketDAO {
     }
 
     @Override
+    public Ticket getTicketById(Long id) {
+        return jdbcTemplate.queryForObject(SQL_FIND_TICKET_BY_ID, new Object[] { id }, ticketMapper);
+    }
+
+    @Override
     public Ticket getTicketByType(Type type) {
         return jdbcTemplate.queryForObject(SQL_FIND_TICKET_BY_TYPE, new Object[] { type }, ticketMapper);
-
     }
 
     @Override
