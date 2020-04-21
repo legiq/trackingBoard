@@ -1,10 +1,9 @@
-package com.example.TaskManager.DAO;
+package com.example.TaskManager.dao;
 
 import com.example.TaskManager.model.Ticket;
 import com.example.TaskManager.model.Type;
 import com.example.TaskManager.model.User;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 

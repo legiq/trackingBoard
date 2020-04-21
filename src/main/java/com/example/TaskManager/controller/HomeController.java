@@ -1,6 +1,6 @@
 package com.example.TaskManager.controller;
 
-import com.example.TaskManager.DAO.DAOImpl.UserDAOImpl;
+import com.example.TaskManager.dao.impl.UserDAOImpl;
 import com.example.TaskManager.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

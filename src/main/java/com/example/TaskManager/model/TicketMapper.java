@@ -1,7 +1,7 @@
 package com.example.TaskManager.model;
 
-import com.example.TaskManager.DAO.DAOImpl.UserDAOImpl;
-import com.example.TaskManager.DAO.UserDAO;
+import com.example.TaskManager.dao.impl.UserDAOImpl;
+import com.example.TaskManager.dao.UserDAO;
 import com.example.TaskManager.config.JdbcConfig;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

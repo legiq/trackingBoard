@@ -1,4 +1,4 @@
-package com.example.TaskManager.DAO;
+package com.example.TaskManager.dao;
 
 import com.example.TaskManager.model.User;
 

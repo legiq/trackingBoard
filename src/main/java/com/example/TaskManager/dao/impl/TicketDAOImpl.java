@@ -1,7 +1,6 @@
-package com.example.TaskManager.DAO.DAOImpl;
+package com.example.TaskManager.dao.impl;
 
-import com.example.TaskManager.DAO.TicketDAO;
-import com.example.TaskManager.DAO.UserDAO;
+import com.example.TaskManager.dao.TicketDAO;
 import com.example.TaskManager.model.Ticket;
 import com.example.TaskManager.model.TicketMapper;
 import com.example.TaskManager.model.Type;

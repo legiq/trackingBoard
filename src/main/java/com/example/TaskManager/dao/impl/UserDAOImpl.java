@@ -1,6 +1,6 @@
-package com.example.TaskManager.DAO.DAOImpl;
+package com.example.TaskManager.dao.impl;
 
-import com.example.TaskManager.DAO.UserDAO;
+import com.example.TaskManager.dao.UserDAO;
 import com.example.TaskManager.model.User;
 import com.example.TaskManager.model.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
