@@ -3,41 +3,43 @@
 
 <@c.page>
     <div>
-        <#if user.role = "Developer">
-            <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button"
-               aria-expanded="false"
-               aria-controls="collapseExample">
-                Add new ticket
-            </a>
-            <div class="collapse" id="collapseExample">
-                <div class="form-group mt-3">
-                    <form method="post">
-                        <div class="form-group float-left">
-                            <input type="text" name="label" placeholder="Enter label">
-                        </div>
-                        <div class="form-group float-left">
-                            <input type="text" name="description" placeholder="Enter description">
-                        </div>
-                        <div class="form-group float-left">
-                            <input type="text" name="executor_login" placeholder="Enter executor login">
-                        </div>
+        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button"
+           aria-expanded="false"
+           aria-controls="collapseExample">
+            Add new ticket
+        </a>
+        <div class="collapse" id="collapseExample">
+            <div class="form-group mt-3">
+                <form method="post">
+                    <div class="form-group float-left">
+                        <input type="text" name="label" placeholder="Enter label">
+                    </div>
+                    <div class="form-group float-left">
+                        <input type="text" name="description" placeholder="Enter description">
+                    </div>
+                    <div class="form-group float-left">
+                        <input type="text" name="executor_login" placeholder="Enter executor login">
+                    </div>
+                    <#if user.role = "Developer">
                         <div class="form-group float-left">
                             <input type="text" name="type" placeholder="Enter type">
                         </div>
-                        <div class="form-group float-left">
-                            <input type="text" name="status" placeholder="Enter status">
-                        </div>
-                        <div class="form-group float-left">
-                            <input type="text" name="components" placeholder="Enter components">
-                        </div>
-                        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary m-2">Save</button>
-                        </div>
-                    </form>
-                </div>
+                    <#else>
+                        <input type="hidden" name="type" value="Bug">
+                    </#if>
+                    <div class="form-group float-left">
+                        <input type="text" name="status" placeholder="Enter status">
+                    </div>
+                    <div class="form-group float-left">
+                        <input type="text" name="components" placeholder="Enter components">
+                    </div>
+                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary ml-2">Save</button>
+                    </div>
+                </form>
             </div>
-        </#if>
+        </div>
     </div>
     <div class="float-left m-3">
         <table class="table table-bordered table-striped m-2 fixed">

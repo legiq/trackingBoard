@@ -20,15 +20,15 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User userInfo = userDAO.getUserByLogin(username);
+        User user = userDAO.getUserByLogin(username);
 
-        if(userInfo.getUsername() == null){
+        if(user.getUsername() == null){
             throw new UsernameNotFoundException("User not authorized.");
         }
 
-        GrantedAuthority authority = new SimpleGrantedAuthority(userInfo.getRole().toString());
+        GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().toString());
 
-        return (UserDetails) new User(userInfo.getId() , userInfo.getUsername(), userInfo.getPassword(),
+        return (UserDetails) new User(user.getId() , user.getUsername(), user.getPassword(),
                 Role.valueOf(authority.getAuthority()), true);
     }
 }
