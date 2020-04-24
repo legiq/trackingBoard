@@ -3,6 +3,14 @@
 
 <@c.page>
     <div>
+        <div class="form-group col-md-6">
+            <form method="get" action="/main" class="form-inline">
+                <input type="text" name="filterByType" class="form-control" value="${filterByType!}" placeholder="Type">
+                <input type="text" name="filterByTime" class="form-control" value="${filterByTime!}" placeholder="Time">
+                <input type="text" name="filterByCreator" class="form-control" value="${filterByCreator!}" placeholder="Creator">
+                <button type="submit" class="btn btn-primary ml-2">Search</button>
+            </form>
+        </div>
         <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button"
            aria-expanded="false"
            aria-controls="collapseExample">
@@ -18,7 +26,7 @@
                         <input type="text" name="description" placeholder="Enter description">
                     </div>
                     <div class="form-group float-left">
-                        <input type="text" name="executor_login" placeholder="Enter executor login">
+                        <input type="text" name="executorLogin" placeholder="Enter executors">
                     </div>
                     <#if user.role = "Developer">
                         <div class="form-group float-left">

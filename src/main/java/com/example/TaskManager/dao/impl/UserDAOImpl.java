@@ -16,13 +16,21 @@ public class UserDAOImpl implements UserDAO {
     JdbcTemplate jdbcTemplate;
 
     private final String SQL_FIND_USER_BY_LOGIN = "select * from public.users where login = ?";
+
     private final String SQL_FIND_USER_BY_ID = "select * from users where id = ?";
+
     private final String SQL_DELETE_USER = "delete from users where id = ?";
-    private final String SQL_UPDATE_USER = "update users set login = ?, password = ?, role  = ?::user_role, active = ? where id = ?";
+
+    private final String SQL_UPDATE_USER = "update users " +
+            "set login = ?, password = ?, role  = ?::user_role, active = ? where id = ?";
+
     private final String SQL_GET_ALL = "select * from users";
-    private final String SQL_INSERT_USER = "insert into users (login, password, role, active) values(?,?,?::user_role,?)";
-    private final String SQL_FIND_USER_BY_TICKET = "SELECT * FROM users join tickets " +
-            "on users.id = tickets.executor_id where tickets.id = ?";
+
+    private final String SQL_INSERT_USER = "insert into users (login, password, role, active) " +
+            "values(?,?,?::user_role,?)";
+
+    private final String SQL_FIND_USER_BY_TICKET = "SELECT * FROM users join tickets_executors " +
+            "on users.id = tickets_executors.executor_id where tickets_executors.ticket_id = ?";
 
     @Autowired
     public UserDAOImpl(DataSource dataSource) {

@@ -1,9 +1,9 @@
 package com.example.TaskManager.controller;
 
-import com.example.TaskManager.dao.impl.TicketDAOImpl;
-import com.example.TaskManager.dao.impl.UserDAOImpl;
 import com.example.TaskManager.dao.TicketDAO;
 import com.example.TaskManager.dao.UserDAO;
+import com.example.TaskManager.dao.impl.TicketDAOImpl;
+import com.example.TaskManager.dao.impl.UserDAOImpl;
 import com.example.TaskManager.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,9 +34,37 @@ public class MainController {
     }
 
     @GetMapping("/main")
-    public String show(Model model) {
+    public String show(
+            @RequestParam(required = false, defaultValue = "") String filterByType,
+            @RequestParam(required = false, defaultValue = "") String filterByTime,
+            @RequestParam(required = false, defaultValue = "") String filterByCreator,
+            Model model
+    ) {
 
-        List<Ticket> tickets = ticketDAO.getAllTickets();
+        List<Ticket> tickets;
+
+        List<String> types = Stream.of(Type.values())
+                .map(Type::toString)
+                .collect(Collectors.toList());
+
+        List<String> creators = userDAO.getAllUsers().stream()
+                .map(User::getUsername)
+                .collect(Collectors.toList());
+
+        if (types.contains(filterByType)) {
+            tickets = ticketDAO.getTicketByType(Type.valueOf(filterByType));
+        } else if (!filterByTime.isEmpty()) {
+            try {
+                tickets = ticketDAO.getTicketByTime(Date.valueOf(filterByTime));
+            } catch (Exception ex) {
+                tickets = Collections.emptyList();
+            }
+        } else if (creators.contains(filterByCreator)) {
+            tickets = ticketDAO.getTicketByCreator(userDAO.getUserByLogin(filterByCreator));
+        } else {
+            tickets = ticketDAO.getAllTickets();
+        }
+
         model.addAttribute("tickets", tickets);
 
         return "main";
@@ -44,19 +75,20 @@ public class MainController {
             @AuthenticationPrincipal User user,
             @RequestParam String label,
             @RequestParam(required = false, defaultValue = "No info") String description,
-            @RequestParam String executor_login,
+            @RequestParam String executorLogin,
             @RequestParam String type,
             @RequestParam String status,
             @RequestParam(required = false, defaultValue = "None") String components,
             Model model
     ) {
 
-        User executor = userDAO.getUserByLogin(executor_login);
+        List<User> executors = new ArrayList<>();
 
-        if (label != null && !label.isEmpty() && user != null && executor != null) {
+        for(String login : executorLogin.split(" ")) {
+            executors.add(userDAO.getUserByLogin(login));
+        }
 
-            List<User> executors = new ArrayList<>();
-            executors.add(executor);
+        if (label != null && !label.isEmpty() && user != null && !executors.isEmpty()) {
 
             List<Components> componentsList = Stream.of(components.split(" "))
                     .map(Components::valueOf)

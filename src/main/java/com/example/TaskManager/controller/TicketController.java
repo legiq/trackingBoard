@@ -9,7 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Controller
 @RequestMapping("/ticket")
@@ -60,11 +62,13 @@ public class TicketController {
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
 
-        User executor = userDAO.getUserByLogin(username);
+        List<User> oldExecutors = ticket.getExecutors();
 
-        ticket.setExecutors(Collections.singletonList(executor));
+        oldExecutors.add(userDAO.getUserByLogin(username));
 
-        ticketDAO.updateTicket(ticket);
+        ticket.setExecutors(oldExecutors);
+
+        ticketDAO.addExecutorToTicket(ticket);
 
         return "redirect:/ticket/" + ticketId;
     }

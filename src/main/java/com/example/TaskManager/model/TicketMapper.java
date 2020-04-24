@@ -5,6 +5,9 @@ import com.example.TaskManager.dao.UserDAO;
 import com.example.TaskManager.dao.impl.UserDAOImpl;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -14,11 +17,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@NoArgsConstructor
-@AllArgsConstructor
 public class TicketMapper implements RowMapper<Ticket> {
 
-    private UserDAO userDAO = new UserDAOImpl(new JdbcConfig().dataSource());
+    private UserDAO userDAO;
+
+    public TicketMapper (UserDAO user) {
+        this.userDAO = user;
+    }
+
+    public void setUserDAO(UserDAO userDAO) {
+//        this.userDAO = userDAO;
+    }
 
     @Override
     public Ticket mapRow(ResultSet resultSet, int rowNum) throws SQLException {

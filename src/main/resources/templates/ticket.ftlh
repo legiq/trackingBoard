@@ -25,10 +25,10 @@
         </#list>
         <#if ticket.creator.id = user.id>
             <form method="post" action="/ticket/add">
-                <input type="text" name="username" placeholder="Enter username">
+                <input type="text" name="username" placeholder="Enter new executor">
                 <input type="hidden" name="ticketId" value="${ticket.id}">
                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                <button type="submit" class="btn btn-primary ml-2">Edit</button>
+                <button type="submit" class="btn btn-primary ml-2">Add</button>
             </form>
         </#if>
     </div>

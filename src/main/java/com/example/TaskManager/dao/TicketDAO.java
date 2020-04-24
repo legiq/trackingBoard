@@ -13,15 +13,17 @@ public interface TicketDAO {
 
     Ticket getTicketById(Long id);
 
-    Ticket getTicketByType(Type type);
+    List<Ticket> getTicketByType(Type type);
 
-    Ticket getTicketByTime(Date time);
+    List<Ticket> getTicketByTime(Date time);
 
-    Ticket getTicketByCreator(User user);
+    List<Ticket> getTicketByCreator(User user);
 
     boolean deleteTicket(Ticket ticket);
 
     boolean updateTicket(Ticket ticket);
 
     boolean addTicket(Ticket ticket);
+
+    boolean addExecutorToTicket(Ticket ticket);
 }
