@@ -1,8 +1,8 @@
 package com.example.TaskManager.service;
 
-import com.example.TaskManager.dao.impl.UserDAOImpl;
-import com.example.TaskManager.model.Role;
+import com.example.TaskManager.dao.UserDAO;
 import com.example.TaskManager.model.User;
+import com.example.TaskManager.model.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,8 +14,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService implements UserDetailsService {
 
+    private UserDAO userDAO;
+
     @Autowired
-    private UserDAOImpl userDAO;
+    public UserService (UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -4,10 +4,11 @@
 <@c.page>
     <div>
         <div class="form-group col-md-6">
-            <form method="get" action="/main" class="form-inline">
+            <form method="post" action="/filter" class="form-inline">
                 <input type="text" name="filterByType" class="form-control" value="${filterByType!}" placeholder="Type">
                 <input type="text" name="filterByTime" class="form-control" value="${filterByTime!}" placeholder="Time">
                 <input type="text" name="filterByCreator" class="form-control" value="${filterByCreator!}" placeholder="Creator">
+                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                 <button type="submit" class="btn btn-primary ml-2">Search</button>
             </form>
         </div>
@@ -69,7 +70,7 @@
                                 <#if ticket.creator.username = name>
                                     <div>
                                         <form method="post" action="/delete">
-                                            <input type="hidden" name="ticket_id" value="${ticket.id}">
+                                            <input type="hidden" name="ticketId" value="${ticket.id}">
                                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                             <button type="submit" class="btn btn-primary">Delete</button>
                                         </form>
@@ -103,7 +104,7 @@
                                 <#if ticket.creator.username = name>
                                     <div>
                                         <form method="post" action="/delete">
-                                            <input type="hidden" name="ticket_id" value="${ticket.id}">
+                                            <input type="hidden" name="ticketId" value="${ticket.id}">
                                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                             <button type="submit" class="btn btn-primary">Delete</button>
                                         </form>
@@ -137,7 +138,7 @@
                                 <#if ticket.creator.username = name>
                                     <div>
                                         <form method="post" action="/delete">
-                                            <input type="hidden" name="ticket_id" value="${ticket.id}">
+                                            <input type="hidden" name="ticketId" value="${ticket.id}">
                                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                             <button type="submit" class="btn btn-primary">Delete</button>
                                         </form>
@@ -171,7 +172,7 @@
                                 <#if ticket.creator.username = name>
                                     <div>
                                         <form method="post" action="/delete">
-                                            <input type="hidden" name="ticket_id" value="${ticket.id}">
+                                            <input type="hidden" name="ticketId" value="${ticket.id}">
                                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                             <button type="submit" class="btn btn-primary">Delete</button>
                                         </form>

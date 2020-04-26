@@ -2,7 +2,7 @@ package com.example.TaskManager.dao.impl;
 
 import com.example.TaskManager.dao.UserDAO;
 import com.example.TaskManager.model.User;
-import com.example.TaskManager.model.UserMapper;
+import com.example.TaskManager.dao.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -12,8 +12,6 @@ import java.util.List;
 
 @Component
 public class UserDAOImpl implements UserDAO {
-
-    JdbcTemplate jdbcTemplate;
 
     private final String SQL_FIND_USER_BY_LOGIN = "select * from public.users where login = ?";
 
@@ -32,29 +30,33 @@ public class UserDAOImpl implements UserDAO {
     private final String SQL_FIND_USER_BY_TICKET = "SELECT * FROM users join tickets_executors " +
             "on users.id = tickets_executors.executor_id where tickets_executors.ticket_id = ?";
 
+    private JdbcTemplate jdbcTemplate;
+    private UserMapper userMapper;
+
     @Autowired
-    public UserDAOImpl(DataSource dataSource) {
+    public UserDAOImpl(DataSource dataSource, UserMapper userMapper) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        this.userMapper = userMapper;
     }
 
     @Override
     public List<User> getAllUsers() {
-        return jdbcTemplate.query(SQL_GET_ALL, new UserMapper());
+        return jdbcTemplate.query(SQL_GET_ALL, userMapper);
     }
 
     @Override
     public List<User> getUsersFromTicket(Long ticketId) {
-        return jdbcTemplate.query(SQL_FIND_USER_BY_TICKET, new Object[] {ticketId}, new UserMapper());
+        return jdbcTemplate.query(SQL_FIND_USER_BY_TICKET, new Object[] {ticketId}, userMapper);
     }
 
     @Override
     public User getUserById(Long id) {
-        return jdbcTemplate.queryForObject(SQL_FIND_USER_BY_ID, new Object[] {id}, new UserMapper());
+        return jdbcTemplate.queryForObject(SQL_FIND_USER_BY_ID, new Object[] {id}, userMapper);
     }
 
     @Override
     public User getUserByLogin(String login) {
-        return jdbcTemplate.queryForObject(SQL_FIND_USER_BY_LOGIN, new Object[] { login }, new UserMapper());
+        return jdbcTemplate.queryForObject(SQL_FIND_USER_BY_LOGIN, new Object[] { login }, userMapper);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.example.TaskManager.dao;
 
 import com.example.TaskManager.model.Ticket;
-import com.example.TaskManager.model.Type;
+import com.example.TaskManager.model.enums.Type;
 import com.example.TaskManager.model.User;
 
 import java.util.Date;

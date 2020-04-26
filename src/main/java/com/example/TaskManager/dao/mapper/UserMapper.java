@@ -1,10 +1,14 @@
-package com.example.TaskManager.model;
+package com.example.TaskManager.dao.mapper;
 
+import com.example.TaskManager.model.enums.Role;
+import com.example.TaskManager.model.User;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class UserMapper implements RowMapper<User> {
 
     @Override

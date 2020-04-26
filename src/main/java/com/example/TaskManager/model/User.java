@@ -1,5 +1,6 @@
 package com.example.TaskManager.model;
 
+import com.example.TaskManager.model.enums.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

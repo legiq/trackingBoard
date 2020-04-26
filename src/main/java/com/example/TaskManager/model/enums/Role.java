@@ -1,4 +1,4 @@
-package com.example.TaskManager.model;
+package com.example.TaskManager.model.enums;
 
 import org.springframework.security.core.GrantedAuthority;
 

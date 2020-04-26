@@ -1,5 +1,8 @@
 package com.example.TaskManager.model;
 
+import com.example.TaskManager.model.enums.Components;
+import com.example.TaskManager.model.enums.Status;
+import com.example.TaskManager.model.enums.Type;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

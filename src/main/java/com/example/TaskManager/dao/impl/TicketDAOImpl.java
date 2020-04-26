@@ -3,14 +3,15 @@ package com.example.TaskManager.dao.impl;
 import com.example.TaskManager.dao.TicketDAO;
 import com.example.TaskManager.dao.UserDAO;
 import com.example.TaskManager.model.Ticket;
-import com.example.TaskManager.model.TicketMapper;
-import com.example.TaskManager.model.Type;
+import com.example.TaskManager.dao.mapper.TicketMapper;
+import com.example.TaskManager.model.enums.Type;
 import com.example.TaskManager.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class TicketDAOImpl implements TicketDAO {
             " components = ?::ticket_component[], time = ? where id = ?";
 
     private final String SQL_INSERT_TICKET_EXECUTORS = "insert into tickets_executors " +
-            "(ticket_id, executor_id) values((select id from tickets where label = ?), ?)";
+            "(ticket_id, executor_id) values(?, ?)";
 
     private final String SQL_INSERT_TICKET = "insert into tickets " +
             "(label, description, creator_id, type, status, components, time) " +
@@ -49,16 +50,13 @@ public class TicketDAOImpl implements TicketDAO {
 
     private JdbcTemplate jdbcTemplate;
 
-    private UserDAO userDAO;
+    private TicketMapper ticketMapper;
 
     @Autowired
     public TicketDAOImpl(DataSource dataSource, UserDAO userDAO) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        this.userDAO = userDAO;
         this.ticketMapper = new TicketMapper(userDAO);
     }
-
-    private TicketMapper ticketMapper;
 
     @Override
     public List<Ticket> getAllTickets() {
@@ -117,8 +115,13 @@ public class TicketDAOImpl implements TicketDAO {
                 ticket.getCreator().getId(), ticket.getType().toString(),
                 ticket.getStatus().toString(), components, ticket.getTime());
 
+        Long ticketIndex = getAllTickets().stream()
+                .map(Ticket::getId)
+                .max(Comparator.comparingLong(a -> a))
+                .orElse(0L);
+
         for(User user : ticket.getExecutors()) {
-            jdbcTemplate.update(SQL_INSERT_TICKET_EXECUTORS, ticket.getLabel(), user.getId());
+            jdbcTemplate.update(SQL_INSERT_TICKET_EXECUTORS, ticketIndex, user.getId());
         }
 
         return  i > 0;

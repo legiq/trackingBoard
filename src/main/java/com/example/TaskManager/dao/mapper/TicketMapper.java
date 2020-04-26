@@ -1,14 +1,13 @@
-package com.example.TaskManager.model;
+package com.example.TaskManager.dao.mapper;
 
-import com.example.TaskManager.config.JdbcConfig;
 import com.example.TaskManager.dao.UserDAO;
-import com.example.TaskManager.dao.impl.UserDAOImpl;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
+import com.example.TaskManager.model.enums.Components;
+import com.example.TaskManager.model.enums.Status;
+import com.example.TaskManager.model.Ticket;
+import com.example.TaskManager.model.enums.Type;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,16 +16,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Component
 public class TicketMapper implements RowMapper<Ticket> {
 
     private UserDAO userDAO;
 
+    @Autowired
     public TicketMapper (UserDAO user) {
         this.userDAO = user;
-    }
-
-    public void setUserDAO(UserDAO userDAO) {
-//        this.userDAO = userDAO;
     }
 
     @Override
