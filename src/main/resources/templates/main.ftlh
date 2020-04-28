@@ -19,7 +19,7 @@
         </a>
         <div class="collapse" id="collapseExample">
             <div class="form-group mt-3">
-                <form method="post">
+                <form method="post" action="/main">
                     <div class="form-group float-left">
                         <input type="text" name="label" placeholder="Enter label">
                     </div>
