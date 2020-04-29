@@ -21,4 +21,9 @@ public class TicketQuery {
     private String insertTicket;
     private String addExecutorToTicket;
     private String getStoryTickets;
+    private String findTicketsByAllFilters;
+    private String findTicketsByCreatorAndTime;
+    private String findTicketsByCreatorAndType;
+    private String findTicketsByTimeAndType;
+    private String deleteExecutorFromTicket;
 }

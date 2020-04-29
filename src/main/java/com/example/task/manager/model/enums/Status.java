@@ -5,7 +5,16 @@ public enum Status {
 
     ToDo, InProgress, InTest, Done;
 
+    private Status nextStatus;
+
+    static {
+        ToDo.nextStatus = InProgress;
+        InProgress.nextStatus = InTest;
+        InTest.nextStatus = Done;
+        Done.nextStatus = Done;
+    }
+
     public Status getNextStatus() {
-        return Status.values()[(this.ordinal()+1)];
+        return this.nextStatus;
     }
 }

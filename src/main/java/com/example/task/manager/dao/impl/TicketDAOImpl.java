@@ -2,10 +2,9 @@ package com.example.task.manager.dao.impl;
 
 import com.example.task.manager.dao.TicketDAO;
 import com.example.task.manager.dao.UserDAO;
+import com.example.task.manager.dao.mapper.TicketMapper;
 import com.example.task.manager.dao.mapper.TicketQuery;
 import com.example.task.manager.model.Ticket;
-import com.example.task.manager.dao.mapper.TicketMapper;
-import com.example.task.manager.model.enums.Type;
 import com.example.task.manager.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -41,6 +40,11 @@ public class TicketDAOImpl implements TicketDAO {
     private final String SQL_INSERT_TICKET = ticketQuery.getInsertTicket();
     private final String SQL_ADD_EXECUTOR_TO_TICKET = ticketQuery.getAddExecutorToTicket();
     private final String SQL_GET_ALL_STORY_TICKETS = ticketQuery.getGetStoryTickets();
+    private final String SQL_FIND_BY_ALL_FILTERS = ticketQuery.getFindTicketsByAllFilters();
+    private final String SQL_FIND_BY_CREATOR_AND_TIME = ticketQuery.getFindTicketsByCreatorAndTime();
+    private final String SQL_FIND_BY_CREATOR_AND_TYPE = ticketQuery.getFindTicketsByCreatorAndType();
+    private final String SQL_FIND_BY_TIME_AND_TYPE = ticketQuery.getFindTicketsByTimeAndType();
+    private final String SQL_DELETE_EXECUTOR_FROM_TICKET = ticketQuery.getDeleteExecutorFromTicket();
 
     @Autowired
     public TicketDAOImpl(DataSource dataSource, UserDAO userDAO) throws IOException {
@@ -59,8 +63,8 @@ public class TicketDAOImpl implements TicketDAO {
     }
 
     @Override
-    public List<Ticket> getTicketByType(Type type) {
-        return jdbcTemplate.query(SQL_FIND_TICKET_BY_TYPE, new Object[] { type.toString() }, ticketMapper);
+    public List<Ticket> getTicketByType(String type) {
+        return jdbcTemplate.query(SQL_FIND_TICKET_BY_TYPE, new Object[] { type }, ticketMapper);
     }
 
     @Override
@@ -75,6 +79,11 @@ public class TicketDAOImpl implements TicketDAO {
 
     @Override
     public boolean deleteTicket(Ticket ticket) {
+
+        for (Ticket subTicket : getAllStoryTickets(ticket)) {
+            subTicket.setStoryId(0L);
+            updateTicket(subTicket);
+        }
 
         jdbcTemplate.update(SQL_DELETE_TICKET_EXECUTORS, ticket.getId());
 
@@ -103,7 +112,8 @@ public class TicketDAOImpl implements TicketDAO {
 
         int i = jdbcTemplate.update(SQL_INSERT_TICKET, ticket.getLabel(), ticket.getDescription(),
                 ticket.getCreator().getId(), ticket.getType().toString(),
-                ticket.getStatus().toString(), components, ticket.getTime());
+                ticket.getStatus().toString(), components, ticket.getTime(),
+                ticket.getStoryId());
 
         Long ticketIndex = getAllTickets().stream()
                 .map(Ticket::getId)
@@ -129,5 +139,30 @@ public class TicketDAOImpl implements TicketDAO {
     @Override
     public List<Ticket> getAllStoryTickets(Ticket story) {
         return jdbcTemplate.query(SQL_GET_ALL_STORY_TICKETS, new Object[]{story.getId()}, ticketMapper);
+    }
+
+    @Override
+    public List<Ticket> getByAllFilters(User creator, String type, Date time) {
+        return jdbcTemplate.query(SQL_FIND_BY_ALL_FILTERS, new Object[]{creator.getId(), type, time}, ticketMapper);
+    }
+
+    @Override
+    public List<Ticket> getByCreatorAndTime(User creator, Date time) {
+        return jdbcTemplate.query(SQL_FIND_BY_CREATOR_AND_TIME, new Object[]{creator.getId(), time}, ticketMapper);
+    }
+
+    @Override
+    public List<Ticket> getByCreatorAndType(User creator, String type) {
+        return jdbcTemplate.query(SQL_FIND_BY_CREATOR_AND_TYPE, new Object[]{creator.getId(), type}, ticketMapper);
+    }
+
+    @Override
+    public List<Ticket> getByTimeAndType(Date time, String type) {
+        return jdbcTemplate.query(SQL_FIND_BY_TIME_AND_TYPE, new Object[]{time, type}, ticketMapper);
+    }
+
+    @Override
+    public boolean deleteExecutorFromTicket(Long ticketId, Long executorId) {
+        return jdbcTemplate.update(SQL_DELETE_EXECUTOR_FROM_TICKET, ticketId, executorId) > 0;
     }
 }

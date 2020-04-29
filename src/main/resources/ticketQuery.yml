@@ -10,11 +10,15 @@ updateTicket: |
   status = ?::ticket_status, components = ?::ticket_component[], time = ?, story_id = ? where id = ?
 insertTicketExecutors: insert into tickets_executors (ticket_id, executor_id) values(?, ?)
 insertTicket: |
-  insert into tickets (label, description, creator_id, type, status, components, time)
-  values(?,?,?,?::ticket_type,?::ticket_status,?::ticket_component[],?)
+  insert into tickets (label, description, creator_id, type, status, components, time, story_id)
+  values(?,?,?,?::ticket_type,?::ticket_status,?::ticket_component[],?,?)
 addExecutorToTicket: insert into tickets_executors (ticket_id, executor_id) values (?,?)
 getStoryTickets: select * from tickets where story_id = ?
-
+findTicketsByAllFilters: select * from tickets where creator_id = ? and type = ?::ticket_type and time = ?
+findTicketsByCreatorAndTime: select * from tickets where creator_id = ? and time = ?
+findTicketsByCreatorAndType: select * from tickets where creator_id = ? and type = ?::ticket_type
+findTicketsByTimeAndType: select * from tickets where time = ? and type = ?::ticket_type
+deleteExecutorFromTicket: delete from tickets_executors where ticket_id = ? and executor_id = ?
 
 
 

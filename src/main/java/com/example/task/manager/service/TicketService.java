@@ -24,7 +24,7 @@ public class TicketService {
     private TicketDAO ticketDAO;
 
     @Autowired
-    public TicketService (UserDAO userDAO, TicketDAO ticketDAO) {
+    public TicketService(UserDAO userDAO, TicketDAO ticketDAO) {
         this.userDAO = userDAO;
         this.ticketDAO = ticketDAO;
     }
@@ -45,38 +45,83 @@ public class TicketService {
 
         List<Ticket> tickets;
 
-        List<String> types = Stream.of(Type.values())
-                .map(Type::toString)
-                .collect(Collectors.toList());
+        if (!filterByCreator.isEmpty() || !filterByType.isEmpty() || !filterByTime.isEmpty()) {
 
-        List<String> creators = userDAO.getAllUsers().stream()
-                .map(User::getUsername)
-                .collect(Collectors.toList());
+            List<String> types = Stream.of(Type.values())
+                    .map(Type::toString)
+                    .collect(Collectors.toList());
 
-        if (types.contains(filterByType)) {
-            tickets = ticketDAO.getTicketByType(Type.valueOf(filterByType));
-        } else if (!filterByTime.isEmpty()) {
-            try {
-                tickets = ticketDAO.getTicketByTime(Date.valueOf(filterByTime));
-            } catch (Exception ex) {
+            List<String> creators = userDAO.getAllUsers().stream()
+                    .map(User::getUsername)
+                    .collect(Collectors.toList());
+
+            if (creators.contains(filterByCreator) && types.contains(filterByType) && !filterByTime.isEmpty()) {
+
+                try {
+                    tickets = ticketDAO.getByAllFilters(userDAO.getUserByLogin(filterByCreator),
+                            filterByType,
+                            Date.valueOf(filterByTime));
+                } catch (Exception ex) {
+                    tickets = Collections.emptyList();
+                }
+
+            } else if (creators.contains(filterByCreator) && !filterByTime.isEmpty() && filterByType.isEmpty()) {
+
+                try {
+                    tickets = ticketDAO.getByCreatorAndTime(userDAO.getUserByLogin(filterByCreator),
+                            Date.valueOf(filterByTime));
+                } catch (Exception ex) {
+                    tickets = Collections.emptyList();
+                }
+
+            } else if (creators.contains(filterByCreator) && types.contains(filterByType) && filterByTime.isEmpty()) {
+
+                tickets = ticketDAO.getByCreatorAndType(userDAO.getUserByLogin(filterByCreator), filterByType);
+
+            } else if (!filterByTime.isEmpty() && types.contains(filterByType) && filterByCreator.isEmpty()) {
+
+                try {
+                    tickets = ticketDAO.getByTimeAndType(Date.valueOf(filterByTime), filterByType);
+                } catch (Exception ex) {
+                    tickets = Collections.emptyList();
+                }
+
+            } else if (creators.contains(filterByCreator) && filterByTime.isEmpty() && filterByType.isEmpty()) {
+
+                tickets = ticketDAO.getTicketByCreator(userDAO.getUserByLogin(filterByCreator));
+
+            } else if (!filterByTime.isEmpty() && filterByCreator.isEmpty() && filterByType.isEmpty()) {
+
+                try {
+                    tickets = ticketDAO.getTicketByTime(Date.valueOf(filterByTime));
+                } catch (Exception ex) {
+                    tickets = Collections.emptyList();
+                }
+
+            } else if (types.contains(filterByType) && filterByCreator.isEmpty() && filterByTime.isEmpty()) {
+
+                tickets = ticketDAO.getTicketByType(filterByType);
+
+            } else {
                 tickets = Collections.emptyList();
             }
-        } else if (creators.contains(filterByCreator)) {
-            tickets = ticketDAO.getTicketByCreator(userDAO.getUserByLogin(filterByCreator));
+
         } else {
+
             tickets = ticketDAO.getAllTickets();
+
         }
 
         return tickets;
     }
 
     public void addTicket(User user, String label, String description, String executorLogin,
-                                          String type, String status, String components
+                          String type, String status, String components
     ) {
 
         List<User> executors = new ArrayList<>();
 
-        for(String login : executorLogin.split(" ")) {
+        for (String login : executorLogin.split(" ")) {
             executors.add(userDAO.getUserByLogin(login));
         }
 

@@ -32,7 +32,7 @@ public class UserService implements UserDetailsService {
 
         GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().toString());
 
-        return (UserDetails) new User(user.getId() , user.getUsername(), user.getPassword(),
+        return new User(user.getId() , user.getUsername(), user.getPassword(),
                 Role.valueOf(authority.getAuthority()), true);
     }
 }

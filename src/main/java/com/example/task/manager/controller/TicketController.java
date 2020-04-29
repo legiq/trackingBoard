@@ -4,7 +4,9 @@ import com.example.task.manager.dao.TicketDAO;
 import com.example.task.manager.dao.UserDAO;
 import com.example.task.manager.model.Ticket;
 import com.example.task.manager.model.User;
+import com.example.task.manager.model.enums.Components;
 import com.example.task.manager.model.enums.Status;
+import com.example.task.manager.model.enums.Type;
 import com.example.task.manager.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,7 +14,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/ticket")
@@ -53,7 +58,10 @@ public class TicketController {
         ticket.setDescription(description);
         ticketDAO.updateTicket(ticket);
 
+        List<Ticket> subTickets = ticketService.getAllStoryTickets(ticket);
+
         model.addAttribute("ticket", ticket);
+        model.addAttribute("subTickets", subTickets);
 
         return "ticket";
     }
@@ -112,14 +120,74 @@ public class TicketController {
     }
 
     @PostMapping("/addSubTicket")
-    public String addSubTicket (
+    public String addSubTicket(
             @RequestParam Long ticketId,
             @RequestParam Long subTicketId
-            ) {
+    ) {
 
         Ticket subTicket = ticketDAO.getTicketById(subTicketId);
         subTicket.setStoryId(ticketId);
         ticketDAO.updateTicket(subTicket);
+
+        return "redirect:/ticket/" + ticketId;
+    }
+
+    @PostMapping("/deleteSubTicket")
+    public String deleteSubTicket(
+            @RequestParam Long ticketId,
+            @RequestParam Long subTicketId
+    ) {
+
+        Ticket subTicket = ticketDAO.getTicketById(subTicketId);
+        subTicket.setStoryId(0L);
+        ticketDAO.updateTicket(subTicket);
+
+        return "redirect:/ticket/" + ticketId;
+    }
+
+    @PostMapping("/deleteExecutor")
+    public String deleteExecutor(
+            @RequestParam Long executorId,
+            @RequestParam Long ticketId
+    ) {
+
+        ticketDAO.deleteExecutorFromTicket(ticketId, executorId);
+
+        return "redirect:/ticket/" + ticketId;
+    }
+
+    @PostMapping("/createSubTicket")
+    public String createSubTicket(
+            @AuthenticationPrincipal User user,
+            @RequestParam String label,
+            @RequestParam(required = false, defaultValue = "No info") String description,
+            @RequestParam String executorLogin,
+            @RequestParam String type,
+            @RequestParam String status,
+            @RequestParam(required = false, defaultValue = "None") String components,
+            @RequestParam Long ticketId
+    ) {
+
+        List<User> executors = new ArrayList<>();
+
+        for (String login : executorLogin.split(" ")) {
+            executors.add(userDAO.getUserByLogin(login));
+        }
+
+        if (label != null && !label.isEmpty() && user != null && !executors.isEmpty()) {
+
+            List<Components> componentsList = Stream.of(components.split(" "))
+                    .map(Components::valueOf)
+                    .collect(Collectors.toList());
+
+            Ticket ticket = new Ticket(label, description, user,
+                    executors, Type.valueOf(type), Status.valueOf(status),
+                    componentsList);
+
+            ticket.setStoryId(ticketId);
+
+            ticketDAO.addTicket(ticket);
+        }
 
         return "redirect:/ticket/" + ticketId;
     }
