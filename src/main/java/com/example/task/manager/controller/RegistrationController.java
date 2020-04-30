@@ -1,7 +1,7 @@
 package com.example.task.manager.controller;
 
-import com.example.task.manager.dao.UserDAO;
 import com.example.task.manager.model.User;
+import com.example.task.manager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class RegistrationController {
 
+    private UserService userService;
+
     @Autowired
-    UserDAO userDAO;
+    public RegistrationController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/registration")
     public String registration() {
@@ -23,7 +27,7 @@ public class RegistrationController {
 
         user.setActive(true);
 
-        userDAO.addUser(user);
+        userService.addUser(user);
 
         return "redirect:/login";
     }

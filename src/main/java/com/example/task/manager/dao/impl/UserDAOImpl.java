@@ -18,25 +18,34 @@ import java.util.List;
 @Component
 public class UserDAOImpl implements UserDAO {
 
-
     private JdbcTemplate jdbcTemplate;
     private UserMapper userMapper;
-    private UserQuery userQuery = new ObjectMapper(new YAMLFactory())
-            .findAndRegisterModules()
-            .readValue(new File("src/main/resources/userQuery.yml"), UserQuery.class);
 
-    private final String SQL_FIND_USER_BY_LOGIN = userQuery.getFindUserByLogin();
-    private final String SQL_FIND_USER_BY_ID = userQuery.getFindUserById();
-    private final String SQL_DELETE_USER = userQuery.getDeleteUser();
-    private final String SQL_UPDATE_USER = userQuery.getUpdateUser();
-    private final String SQL_GET_ALL = userQuery.getGetAllUsers();
-    private final String SQL_INSERT_USER = userQuery.getInsertUser();
-    private final String SQL_FIND_USER_BY_TICKET = userQuery.getFindUserByTicket();
+    private final String SQL_FIND_USER_BY_LOGIN;
+    private final String SQL_FIND_USER_BY_ID;
+    private final String SQL_DELETE_USER;
+    private final String SQL_UPDATE_USER;
+    private final String SQL_GET_ALL;
+    private final String SQL_INSERT_USER;
+    private final String SQL_FIND_USER_BY_TICKET;
 
     @Autowired
     public UserDAOImpl(DataSource dataSource, UserMapper userMapper) throws IOException {
+
         jdbcTemplate = new JdbcTemplate(dataSource);
         this.userMapper = userMapper;
+
+        UserQuery userQuery = new ObjectMapper(new YAMLFactory())
+                .findAndRegisterModules()
+                .readValue(new File("src/main/resources/userQuery.yml"), UserQuery.class);
+
+        SQL_FIND_USER_BY_LOGIN = userQuery.getFindUserByLogin();
+        SQL_FIND_USER_BY_ID = userQuery.getFindUserById();
+        SQL_DELETE_USER = userQuery.getDeleteUser();
+        SQL_UPDATE_USER = userQuery.getUpdateUser();
+        SQL_GET_ALL = userQuery.getGetAllUsers();
+        SQL_INSERT_USER = userQuery.getInsertUser();
+        SQL_FIND_USER_BY_TICKET = userQuery.getFindUserByTicket();
     }
 
     @Override

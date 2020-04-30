@@ -24,32 +24,53 @@ public class TicketDAOImpl implements TicketDAO {
 
     private JdbcTemplate jdbcTemplate;
     private TicketMapper ticketMapper;
-    private TicketQuery ticketQuery = new ObjectMapper(new YAMLFactory())
-            .findAndRegisterModules()
-            .readValue(new File("src/main/resources/ticketQuery.yml"), TicketQuery.class);
 
-    private final String SQL_GET_ALL = ticketQuery.getGetAllTickets();
-    private final String SQL_FIND_TICKET_BY_ID = ticketQuery.getFindTicketById();
-    private final String SQL_FIND_TICKET_BY_TYPE = ticketQuery.getFindTicketByType();
-    private final String SQL_FIND_TICKET_BY_TIME = ticketQuery.getFindTicketByTime();
-    private final String SQL_FIND_TICKET_BY_CREATOR = ticketQuery.getFindTicketByCreator();
-    private final String SQL_DELETE_TICKET_EXECUTORS = ticketQuery.getDeleteTicketExecutors();
-    private final String SQL_DELETE_TICKET = ticketQuery.getDeleteTicket();
-    private final String SQL_UPDATE_TICKET = ticketQuery.getUpdateTicket();
-    private final String SQL_INSERT_TICKET_EXECUTORS = ticketQuery.getInsertTicketExecutors();
-    private final String SQL_INSERT_TICKET = ticketQuery.getInsertTicket();
-    private final String SQL_ADD_EXECUTOR_TO_TICKET = ticketQuery.getAddExecutorToTicket();
-    private final String SQL_GET_ALL_STORY_TICKETS = ticketQuery.getGetStoryTickets();
-    private final String SQL_FIND_BY_ALL_FILTERS = ticketQuery.getFindTicketsByAllFilters();
-    private final String SQL_FIND_BY_CREATOR_AND_TIME = ticketQuery.getFindTicketsByCreatorAndTime();
-    private final String SQL_FIND_BY_CREATOR_AND_TYPE = ticketQuery.getFindTicketsByCreatorAndType();
-    private final String SQL_FIND_BY_TIME_AND_TYPE = ticketQuery.getFindTicketsByTimeAndType();
-    private final String SQL_DELETE_EXECUTOR_FROM_TICKET = ticketQuery.getDeleteExecutorFromTicket();
+    private final String SQL_GET_ALL;
+    private final String SQL_FIND_TICKET_BY_ID;
+    private final String SQL_FIND_TICKET_BY_TYPE;
+    private final String SQL_FIND_TICKET_BY_TIME;
+    private final String SQL_FIND_TICKET_BY_CREATOR;
+    private final String SQL_DELETE_TICKET_EXECUTORS;
+    private final String SQL_DELETE_TICKET;
+    private final String SQL_UPDATE_TICKET;
+    private final String SQL_INSERT_TICKET_EXECUTORS;
+    private final String SQL_INSERT_TICKET;
+    private final String SQL_ADD_EXECUTOR_TO_TICKET;
+    private final String SQL_GET_ALL_STORY_TICKETS;
+    private final String SQL_FIND_BY_ALL_FILTERS;
+    private final String SQL_FIND_BY_CREATOR_AND_TIME;
+    private final String SQL_FIND_BY_CREATOR_AND_TYPE;
+    private final String SQL_FIND_BY_TIME_AND_TYPE;
+    private final String SQL_DELETE_EXECUTOR_FROM_TICKET;
 
     @Autowired
     public TicketDAOImpl(DataSource dataSource, UserDAO userDAO) throws IOException {
+
         jdbcTemplate = new JdbcTemplate(dataSource);
+
         this.ticketMapper = new TicketMapper(userDAO);
+
+        TicketQuery ticketQuery = new ObjectMapper(new YAMLFactory())
+                .findAndRegisterModules()
+                .readValue(new File("src/main/resources/ticketQuery.yml"), TicketQuery.class);
+
+        SQL_GET_ALL = ticketQuery.getGetAllTickets();
+        SQL_FIND_TICKET_BY_ID = ticketQuery.getFindTicketById();
+        SQL_FIND_TICKET_BY_TYPE = ticketQuery.getFindTicketByType();
+        SQL_FIND_TICKET_BY_TIME = ticketQuery.getFindTicketByTime();
+        SQL_FIND_TICKET_BY_CREATOR = ticketQuery.getFindTicketByCreator();
+        SQL_DELETE_TICKET_EXECUTORS = ticketQuery.getDeleteTicketExecutors();
+        SQL_DELETE_TICKET = ticketQuery.getDeleteTicket();
+        SQL_UPDATE_TICKET = ticketQuery.getUpdateTicket();
+        SQL_INSERT_TICKET_EXECUTORS = ticketQuery.getInsertTicketExecutors();
+        SQL_INSERT_TICKET = ticketQuery.getInsertTicket();
+        SQL_ADD_EXECUTOR_TO_TICKET = ticketQuery.getAddExecutorToTicket();
+        SQL_GET_ALL_STORY_TICKETS = ticketQuery.getGetStoryTickets();
+        SQL_FIND_BY_ALL_FILTERS = ticketQuery.getFindTicketsByAllFilters();
+        SQL_FIND_BY_CREATOR_AND_TIME = ticketQuery.getFindTicketsByCreatorAndTime();
+        SQL_FIND_BY_CREATOR_AND_TYPE = ticketQuery.getFindTicketsByCreatorAndType();
+        SQL_FIND_BY_TIME_AND_TYPE = ticketQuery.getFindTicketsByTimeAndType();
+        SQL_DELETE_EXECUTOR_FROM_TICKET = ticketQuery.getDeleteExecutorFromTicket();
     }
 
     @Override
@@ -110,7 +131,7 @@ public class TicketDAOImpl implements TicketDAO {
                 .map(Enum::toString)
                 .toArray(String[]::new);
 
-        int i = jdbcTemplate.update(SQL_INSERT_TICKET, ticket.getLabel(), ticket.getDescription(),
+        int result = jdbcTemplate.update(SQL_INSERT_TICKET, ticket.getLabel(), ticket.getDescription(),
                 ticket.getCreator().getId(), ticket.getType().toString(),
                 ticket.getStatus().toString(), components, ticket.getTime(),
                 ticket.getStoryId());
@@ -124,7 +145,7 @@ public class TicketDAOImpl implements TicketDAO {
             jdbcTemplate.update(SQL_INSERT_TICKET_EXECUTORS, ticketIndex, user.getId());
         }
 
-        return  i > 0;
+        return  result > 0;
     }
 
     @Override

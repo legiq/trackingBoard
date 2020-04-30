@@ -1,6 +1,7 @@
 package com.example.task.manager.model;
 
 import com.example.task.manager.model.enums.Role;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +12,7 @@ import java.util.Collection;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class User implements UserDetails {
 
     private long id;
@@ -19,20 +21,20 @@ public class User implements UserDetails {
     private Role role;
     private boolean active;
 
-    public User (Long id, String login, String password, Role role, boolean active) {
-        this.id = id;
-        this.username = login;
-        this.password = password;
-        this.role = role;
-        this.active = active;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "User[id=%d, login='%s', password='%s', role='%s', active='%s']",
-                id, username, password, role.toString(), active);
-    }
+//    public User (Long id, String login, String password, Role role, boolean active) {
+//        this.id = id;
+//        this.username = login;
+//        this.password = password;
+//        this.role = role;
+//        this.active = active;
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return String.format(
+//                "User[id=%d, login='%s', password='%s', role='%s', active='%s']",
+//                id, username, password, role.toString(), active);
+//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

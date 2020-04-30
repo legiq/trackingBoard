@@ -116,7 +116,7 @@ public class TicketService {
     }
 
     public void addTicket(User user, String label, String description, String executorLogin,
-                          String type, String status, String components
+                          String type, String status, String components, Long storyId
     ) {
 
         List<User> executors = new ArrayList<>();
@@ -135,6 +135,8 @@ public class TicketService {
                     executors, Type.valueOf(type), Status.valueOf(status),
                     componentsList);
 
+            ticket.setStoryId(storyId == 0L ? null : storyId);
+
             ticketDAO.addTicket(ticket);
         }
     }
@@ -144,5 +146,42 @@ public class TicketService {
         Ticket ticket = ticketDAO.getTicketById(ticketId);
 
         ticketDAO.deleteTicket(ticket);
+    }
+
+    public Ticket updateDescriptionAndGet(Long ticketId, String description) {
+
+        Ticket ticket = ticketDAO.getTicketById(ticketId);
+        ticket.setDescription(description);
+        ticketDAO.updateTicket(ticket);
+
+        return ticket;
+    }
+
+    public void addExecutorToTicket(Long ticketId, String username) {
+
+        Ticket ticket = ticketDAO.getTicketById(ticketId);
+        List<User> executors = ticket.getExecutors();
+        executors.add(userDAO.getUserByLogin(username));
+        ticket.setExecutors(executors);
+
+        ticketDAO.addExecutorToTicket(ticket);
+    }
+
+    public void updateStatus(Long ticketId, String action) {
+
+        Ticket ticket = ticketDAO.getTicketById(ticketId);
+        ticket.setStatus(action.equals("next") ? ticket.getStatus().getNextStatus() : Status.ToDo);
+        ticketDAO.updateTicket(ticket);
+    }
+
+    public void updateStoryId(Long ticketId, Long newStoryId) {
+
+        Ticket subTicket = ticketDAO.getTicketById(ticketId);
+        subTicket.setStoryId(newStoryId);
+        ticketDAO.updateTicket(subTicket);
+    }
+
+    public void deleteExecutorFromTicket(Long ticketId, Long executorId) {
+        ticketDAO.deleteExecutorFromTicket(ticketId, executorId);
     }
 }

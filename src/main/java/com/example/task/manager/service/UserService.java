@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -34,5 +36,14 @@ public class UserService implements UserDetailsService {
 
         return new User(user.getId() , user.getUsername(), user.getPassword(),
                 Role.valueOf(authority.getAuthority()), true);
+    }
+
+    public List<User> getAllUsers() {
+        return userDAO.getAllUsers();
+    }
+
+    public boolean addUser(User user) {
+
+        return userDAO.addUser(user);
     }
 }

@@ -36,18 +36,14 @@ public class TicketMapper implements RowMapper<Ticket> {
         ticket.setType(Type.valueOf(resultSet.getString("type")));
         ticket.setStatus(Status.valueOf(resultSet.getString("status")));
         ticket.setTime((Date) resultSet.getObject("time"));
-
         ticket.setCreator(userDAO.getUserById(resultSet.getLong("creator_id")));
-
         ticket.setExecutors(userDAO.getUsersFromTicket(resultSet.getLong("id")));
-
         ticket.setComponents(Stream.of(resultSet.getObject("components"))
                 .map(String::valueOf)
                 .map(s -> Stream.of(s.substring(1, s.length() - 1).split(","))
                         .map(Components::valueOf).collect(Collectors.toList()))
                 .flatMap(List::stream)
                 .collect(Collectors.toList()));
-
         ticket.setStoryId(resultSet.getLong("story_id"));
 
         return ticket;

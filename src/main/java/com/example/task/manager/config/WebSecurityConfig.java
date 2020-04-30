@@ -15,8 +15,12 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public WebSecurityConfig (UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

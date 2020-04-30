@@ -40,6 +40,7 @@ public class MainController {
 
         model.addAttribute("tickets",
                 ticketService.getTicketsByFilter(filterByType, filterByCreator, filterByTime));
+
         model.addAttribute("filterByType", filterByType);
         model.addAttribute("filterByTime", filterByTime);
         model.addAttribute("filterByCreator", filterByCreator);
@@ -59,7 +60,7 @@ public class MainController {
             Model model
     ) {
 
-        ticketService.addTicket(user, label, description, executorLogin, type, status, components);
+        ticketService.addTicket(user, label, description, executorLogin, type, status, components, 0L);
 
         model.addAttribute("tickets", ticketService.getAllTickets());
 

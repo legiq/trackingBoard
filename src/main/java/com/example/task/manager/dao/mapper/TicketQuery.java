@@ -26,4 +26,5 @@ public class TicketQuery {
     private String findTicketsByCreatorAndType;
     private String findTicketsByTimeAndType;
     private String deleteExecutorFromTicket;
+
 }
