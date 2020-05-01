@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,11 +37,8 @@ public class TicketMapper implements RowMapper<Ticket> {
         ticket.setTime((Date) resultSet.getObject("time"));
         ticket.setCreator(userDAO.getUserById(resultSet.getLong("creator_id")));
         ticket.setExecutors(userDAO.getUsersFromTicket(resultSet.getLong("id")));
-        ticket.setComponents(Stream.of(resultSet.getObject("components"))
-                .map(String::valueOf)
-                .map(s -> Stream.of(s.substring(1, s.length() - 1).split(","))
-                        .map(Components::valueOf).collect(Collectors.toList()))
-                .flatMap(List::stream)
+        ticket.setComponents(Stream.of((String[]) resultSet.getArray("components").getArray())
+                .map(Components::valueOf)
                 .collect(Collectors.toList()));
         ticket.setStoryId(resultSet.getLong("story_id"));
 

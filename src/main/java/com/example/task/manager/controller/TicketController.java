@@ -80,7 +80,7 @@ public class TicketController {
     @PostMapping("/forward")
     public String forward(@RequestParam Long ticketId) {
 
-        ticketService.updateStatus(ticketId, "next");
+        ticketService.updateToNextStatus(ticketId);
 
         return "redirect:/ticket/" + ticketId;
     }
@@ -88,7 +88,7 @@ public class TicketController {
     @PostMapping("/reopen")
     public String reopen(@RequestParam Long ticketId) {
 
-        ticketService.updateStatus(ticketId, "ToDo");
+        ticketService.updateToTodoStatus(ticketId);
 
         return "redirect:/ticket/" + ticketId;
     }

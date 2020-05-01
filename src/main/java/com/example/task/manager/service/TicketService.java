@@ -167,10 +167,17 @@ public class TicketService {
         ticketDAO.addExecutorToTicket(ticket);
     }
 
-    public void updateStatus(Long ticketId, String action) {
+    public void updateToNextStatus(Long ticketId) {
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
-        ticket.setStatus(action.equals("next") ? ticket.getStatus().getNextStatus() : Status.ToDo);
+        ticket.setStatus(ticket.getStatus().getNextStatus());
+        ticketDAO.updateTicket(ticket);
+    }
+
+    public void updateToTodoStatus(Long ticketId) {
+
+        Ticket ticket = ticketDAO.getTicketById(ticketId);
+        ticket.setStatus(Status.ToDo);
         ticketDAO.updateTicket(ticket);
     }
 
