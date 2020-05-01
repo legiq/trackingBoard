@@ -1,0 +1,9 @@
+findUserByLogin: select * from public.users where login = ?
+findUserById: select * from users where id = ?
+deleteUser: delete from users where id = ?
+updateUser: update users set login = ?, password = ?, role  = ?::user_role, active = ? where id = ?
+getAllUsers: select * from users
+insertUser: insert into users (login, password, role, active) values(?,?,?::user_role,?)
+findUserByTicket: |
+  SELECT * FROM users join tickets_executors
+  on users.id = tickets_executors.executor_id where tickets_executors.ticket_id = ?
