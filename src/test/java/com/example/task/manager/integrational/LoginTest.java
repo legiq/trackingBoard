@@ -1,9 +1,11 @@
-package com.example.task.manager;
+package com.example.task.manager.integrational;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
@@ -15,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestPropertySource("/application-test.properties")
 public class LoginTest {
 
     @Autowired
@@ -29,8 +32,10 @@ public class LoginTest {
     }
 
     @Test
+    @Sql(value={"/create-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value={"/create-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void correctAuthenticationTest() throws Exception {
-        this.mockMvc.perform(formLogin().user("dev").password("1"))
+        this.mockMvc.perform(formLogin().user("user").password("1"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));

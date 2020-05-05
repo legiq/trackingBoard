@@ -5,9 +5,9 @@
     <div>
         <div class="form-group col-md-6">
             <form method="post" action="/filter" class="form-inline">
-                <input type="text" name="filterByType" class="form-control" value="${filterByType!}" placeholder="Type">
-                <input type="text" name="filterByTime" class="form-control" value="${filterByTime!}" placeholder="Time">
-                <input type="text" name="filterByCreator" class="form-control" value="${filterByCreator!}" placeholder="Creator">
+                <input type="text" name="filterByType" class="form-control" value="${filterByType!}" placeholder="Type"/>
+                <input type="text" name="filterByTime" class="form-control" value="${filterByTime!}" placeholder="Time"/>
+                <input type="text" name="filterByCreator" class="form-control" value="${filterByCreator!}" placeholder="Creator"/>
                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                 <button type="submit" class="btn btn-primary ml-2">Search</button>
             </form>
@@ -21,26 +21,26 @@
             <div class="form-group mt-3">
                 <form method="post" action="/main">
                     <div class="form-group float-left">
-                        <input type="text" name="label" placeholder="Enter label">
+                        <input type="text" name="label" placeholder="Enter label"/>
                     </div>
                     <div class="form-group float-left">
-                        <input type="text" name="description" placeholder="Enter description">
+                        <input type="text" name="description" placeholder="Enter description"/>
                     </div>
                     <div class="form-group float-left">
-                        <input type="text" name="executorLogin" placeholder="Enter executors">
+                        <input type="text" name="executorLogin" placeholder="Enter executors"/>
                     </div>
                     <#if user.role = "Developer">
                         <div class="form-group float-left">
-                            <input type="text" name="type" placeholder="Enter type">
+                            <input type="text" name="type" placeholder="Enter type"/>
                         </div>
                     <#else>
-                        <input type="hidden" name="type" value="Bug">
+                        <input type="hidden" name="type" value="Bug"/>
                     </#if>
                     <div class="form-group float-left">
-                        <input type="text" name="status" placeholder="Enter status">
+                        <input type="text" name="status" placeholder="Enter status"/>
                     </div>
                     <div class="form-group float-left">
-                        <input type="text" name="components" placeholder="Enter components">
+                        <input type="text" name="components" placeholder="Enter components"/>
                     </div>
                     <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     <div class="form-group">
@@ -65,12 +65,12 @@
                 <td>
                     <#list tickets as ticket>
                         <#if ticket.status = "ToDo">
-                            <div class="form-group">
+                            <div class="form-group" id="ticket" data-id="${ticket.id}">
                                 <a href="/ticket/${ticket.id}">${ticket.label}</a>
                                 <#if ticket.creator.username = name>
                                     <div>
                                         <form method="post" action="/delete">
-                                            <input type="hidden" name="ticketId" value="${ticket.id}">
+                                            <input type="hidden" name="ticketId" value="${ticket.id}"/>
                                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                             <button type="submit" class="btn btn-primary">Delete</button>
                                         </form>
@@ -99,12 +99,12 @@
                 <td>
                     <#list tickets as ticket>
                         <#if ticket.status = "InProgress">
-                            <div class="form-group">
+                            <div class="form-group" id="ticket" data-id="${ticket.id}">
                                 <a href="/ticket/${ticket.id}">${ticket.label}</a>
                                 <#if ticket.creator.username = name>
                                     <div>
                                         <form method="post" action="/delete">
-                                            <input type="hidden" name="ticketId" value="${ticket.id}">
+                                            <input type="hidden" name="ticketId" value="${ticket.id}"/>
                                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                             <button type="submit" class="btn btn-primary">Delete</button>
                                         </form>
@@ -133,12 +133,12 @@
                 <td>
                     <#list tickets as ticket>
                         <#if ticket.status = "InTest">
-                            <div class="form-group">
+                            <div class="form-group" id="ticket" data-id="${ticket.id}">
                                 <a href="/ticket/${ticket.id}">${ticket.label}</a>
                                 <#if ticket.creator.username = name>
                                     <div>
                                         <form method="post" action="/delete">
-                                            <input type="hidden" name="ticketId" value="${ticket.id}">
+                                            <input type="hidden" name="ticketId" value="${ticket.id}"/>
                                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                             <button type="submit" class="btn btn-primary">Delete</button>
                                         </form>
@@ -167,12 +167,12 @@
                 <td>
                     <#list tickets as ticket>
                         <#if ticket.status = "Done">
-                            <div class="form-group">
+                            <div class="form-group" id="ticket" data-id="${ticket.id}">
                                 <a href="/ticket/${ticket.id}">${ticket.label}</a>
                                 <#if ticket.creator.username = name>
                                     <div>
                                         <form method="post" action="/delete">
-                                            <input type="hidden" name="ticketId" value="${ticket.id}">
+                                            <input type="hidden" name="ticketId" value="${ticket.id}"/>
                                             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                                             <button type="submit" class="btn btn-primary">Delete</button>
                                         </form>
