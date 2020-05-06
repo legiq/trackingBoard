@@ -51,8 +51,8 @@ class UserServiceTest {
 
     private List<User> createTestList() {
         List<User> list = new ArrayList<>();
-        list.add(new User(1, "oleg", "password", Role.Developer, true));
-        list.add(new User(2, "neoleg", "drowssap", Role.QA, true));
+        list.add(new User(1L, "oleg", "password", Role.Developer, true));
+        list.add(new User(2L, "neoleg", "drowssap", Role.QA, true));
 
         return list;
     }

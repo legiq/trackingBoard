@@ -15,7 +15,7 @@ import java.util.Collection;
 @AllArgsConstructor
 public class User implements UserDetails {
 
-    private long id;
+    private Long id;
     private String username;
     private String password;
     private Role role;

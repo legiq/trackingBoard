@@ -76,8 +76,8 @@ public class TicketServiceTest {
 
         List<Ticket> list = new ArrayList<>();
 
-        User creator = new User(1, "creator", "password", Role.Developer, true);
-        User executor = new User(2, "executor", "password", Role.QA, true);
+        User creator = new User(1L, "creator", "password", Role.Developer, true);
+        User executor = new User(2L, "executor", "password", Role.QA, true);
 
         list.add(new Ticket("test task", "info task", creator, Collections.singletonList(executor),
                 Type.Task, Status.ToDo, Collections.singletonList(Components.Backend)));
@@ -92,7 +92,7 @@ public class TicketServiceTest {
                 creator, Collections.singletonList(executor), Type.Story, Status.InTest,
                 Collections.singletonList(Components.DataScience));
 
-        story.setId(3);
+        story.setId(3L);
 
         list.add(subTicket);
         list.add(story);
