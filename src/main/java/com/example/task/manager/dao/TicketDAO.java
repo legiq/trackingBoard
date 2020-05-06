@@ -12,13 +12,13 @@ public interface TicketDAO {
 
     Ticket getTicketById(Long id);
 
+    List<Ticket> getAllStoryTickets(Ticket story);
+
     List<Ticket> getTicketByType(String type);
 
     List<Ticket> getTicketByTime(Date time);
 
     List<Ticket> getTicketByCreator(User user);
-
-    List<Ticket> getAllStoryTickets(Ticket story);
 
     List<Ticket> getByAllFilters(User creator, String type, Date time);
 

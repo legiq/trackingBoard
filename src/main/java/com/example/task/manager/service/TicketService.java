@@ -10,9 +10,7 @@ import com.example.task.manager.model.enums.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,76 +41,11 @@ public class TicketService {
 
     public List<Ticket> getTicketsByFilter(String filterByType, String filterByCreator, String filterByTime) {
 
-        List<Ticket> tickets;
-
-        if (!filterByCreator.isEmpty() || !filterByType.isEmpty() || !filterByTime.isEmpty()) {
-
-            List<String> types = Stream.of(Type.values())
-                    .map(Type::toString)
-                    .collect(Collectors.toList());
-
-            List<String> creators = userDAO.getAllUsers().stream()
-                    .map(User::getUsername)
-                    .collect(Collectors.toList());
-
-            if (creators.contains(filterByCreator) && types.contains(filterByType) && !filterByTime.isEmpty()) {
-
-                try {
-                    tickets = ticketDAO.getByAllFilters(userDAO.getUserByLogin(filterByCreator),
-                            filterByType,
-                            Date.valueOf(filterByTime));
-                } catch (Exception ex) {
-                    tickets = Collections.emptyList();
-                }
-
-            } else if (creators.contains(filterByCreator) && !filterByTime.isEmpty() && filterByType.isEmpty()) {
-
-                try {
-                    tickets = ticketDAO.getByCreatorAndTime(userDAO.getUserByLogin(filterByCreator),
-                            Date.valueOf(filterByTime));
-                } catch (Exception ex) {
-                    tickets = Collections.emptyList();
-                }
-
-            } else if (creators.contains(filterByCreator) && types.contains(filterByType) && filterByTime.isEmpty()) {
-
-                tickets = ticketDAO.getByCreatorAndType(userDAO.getUserByLogin(filterByCreator), filterByType);
-
-            } else if (!filterByTime.isEmpty() && types.contains(filterByType) && filterByCreator.isEmpty()) {
-
-                try {
-                    tickets = ticketDAO.getByTimeAndType(Date.valueOf(filterByTime), filterByType);
-                } catch (Exception ex) {
-                    tickets = Collections.emptyList();
-                }
-
-            } else if (creators.contains(filterByCreator) && filterByTime.isEmpty() && filterByType.isEmpty()) {
-
-                tickets = ticketDAO.getTicketByCreator(userDAO.getUserByLogin(filterByCreator));
-
-            } else if (!filterByTime.isEmpty() && filterByCreator.isEmpty() && filterByType.isEmpty()) {
-
-                try {
-                    tickets = ticketDAO.getTicketByTime(Date.valueOf(filterByTime));
-                } catch (Exception ex) {
-                    tickets = Collections.emptyList();
-                }
-
-            } else if (types.contains(filterByType) && filterByCreator.isEmpty() && filterByTime.isEmpty()) {
-
-                tickets = ticketDAO.getTicketByType(filterByType);
-
-            } else {
-                tickets = Collections.emptyList();
-            }
-
-        } else {
-
-            tickets = ticketDAO.getAllTickets();
-
-        }
-
-        return tickets;
+        return ticketDAO.getAllTickets().stream()
+                .filter(t -> filterByType.isEmpty() || t.getType().toString().equals(filterByType))
+                .filter(t -> filterByCreator.isEmpty() || t.getCreator().getUsername().equals(filterByCreator))
+                .filter(t -> filterByTime.isEmpty() || t.getTime().toString().equals(filterByTime))
+                .collect(Collectors.toList());
     }
 
     public void addTicket(User user, String label, String description, String executorLogin,
