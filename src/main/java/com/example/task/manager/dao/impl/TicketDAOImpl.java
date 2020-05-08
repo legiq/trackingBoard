@@ -94,8 +94,8 @@ public class TicketDAOImpl implements TicketDAO {
     }
 
     @Override
-    public List<Ticket> getTicketByCreator(User user) {
-        return jdbcTemplate.query(SQL_FIND_TICKET_BY_CREATOR, new Object[] { user.getId() }, ticketMapper);
+    public List<Ticket> getTicketByCreator(Long userId) {
+        return jdbcTemplate.query(SQL_FIND_TICKET_BY_CREATOR, new Object[] { userId }, ticketMapper);
     }
 
     @Override

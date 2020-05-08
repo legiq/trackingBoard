@@ -3,6 +3,7 @@ package com.example.task.manager.dao.impl;
 import com.example.task.manager.dao.UserDAO;
 import com.example.task.manager.dao.mapper.UserMapper;
 import com.example.task.manager.dao.mapper.UserQuery;
+import com.example.task.manager.model.Ticket;
 import com.example.task.manager.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -28,6 +29,9 @@ public class UserDAOImpl implements UserDAO {
     private final String SQL_GET_ALL;
     private final String SQL_INSERT_USER;
     private final String SQL_FIND_USER_BY_TICKET;
+    private final String SQL_DELETE_EXECUTOR;
+    private final String SQL_DELETE_ALL_USER_TICKETS;
+    private final String SQL_DELETE_TICKET_EXECUTORS;
 
     @Autowired
     public UserDAOImpl(DataSource dataSource, UserMapper userMapper) throws IOException {
@@ -46,6 +50,9 @@ public class UserDAOImpl implements UserDAO {
         SQL_GET_ALL = userQuery.getGetAllUsers();
         SQL_INSERT_USER = userQuery.getInsertUser();
         SQL_FIND_USER_BY_TICKET = userQuery.getFindUserByTicket();
+        SQL_DELETE_EXECUTOR = userQuery.getDeleteExecutor();
+        SQL_DELETE_ALL_USER_TICKETS = userQuery.getDeleteAllUserTickets();
+        SQL_DELETE_TICKET_EXECUTORS = userQuery.getDeleteTicketExecutors();
     }
 
     @Override
@@ -69,8 +76,8 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean deleteUser(User user) {
-        return jdbcTemplate.update(SQL_DELETE_USER, user.getId()) > 0;
+    public boolean deleteUser(Long userId) {
+        return jdbcTemplate.update(SQL_DELETE_USER, userId) > 0;
     }
 
     @Override
@@ -83,5 +90,25 @@ public class UserDAOImpl implements UserDAO {
     public boolean addUser(User user) {
         return jdbcTemplate.update(SQL_INSERT_USER, user.getUsername(), user.getPassword(),
                 user.getRole().toString(), user.isActive()) > 0;
+    }
+
+    @Override
+    public boolean deleteExecutor(Long userId) {
+        return jdbcTemplate.update(SQL_DELETE_EXECUTOR, userId) > 0;
+    }
+
+    @Override
+    public boolean deleteAllUserTickets(Long userId) {
+        return jdbcTemplate.update(SQL_DELETE_ALL_USER_TICKETS, userId) > 0;
+    }
+
+    @Override
+    public boolean deleteTicketsExecutors(List<Ticket> ticketByCreator) {
+
+        for(Ticket ticket : ticketByCreator) {
+            jdbcTemplate.update(SQL_DELETE_TICKET_EXECUTORS, ticket.getId());
+        }
+
+        return true;
     }
 }

@@ -5,9 +5,12 @@
     <div>
         <div class="form-group col-md-6">
             <form method="post" action="/filter" class="form-inline">
-                <input type="text" name="filterByType" class="form-control" value="${filterByType!}" placeholder="Type"/>
-                <input type="text" name="filterByTime" class="form-control" value="${filterByTime!}" placeholder="Time"/>
-                <input type="text" name="filterByCreator" class="form-control" value="${filterByCreator!}" placeholder="Creator"/>
+                <input type="text" name="filterByType" class="form-control" value="${filterByType!}"
+                       placeholder="Type"/>
+                <input type="text" name="filterByTime" class="form-control" value="${filterByTime!}"
+                       placeholder="Time"/>
+                <input type="text" name="filterByCreator" class="form-control" value="${filterByCreator!}"
+                       placeholder="Creator"/>
                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                 <button type="submit" class="btn btn-primary ml-2">Search</button>
             </form>
@@ -29,13 +32,9 @@
                     <div class="form-group float-left">
                         <input type="text" name="executorLogin" placeholder="Enter executors"/>
                     </div>
-                    <#if user.role = "Developer">
-                        <div class="form-group float-left">
-                            <input type="text" name="type" placeholder="Enter type"/>
-                        </div>
-                    <#else>
-                        <input type="hidden" name="type" value="Bug"/>
-                    </#if>
+                    <div class="form-group float-left">
+                        <input type="text" name="type" placeholder="Enter type"/>
+                    </div>
                     <div class="form-group float-left">
                         <input type="text" name="status" placeholder="Enter status"/>
                     </div>
@@ -67,7 +66,7 @@
                         <#if ticket.status = "ToDo">
                             <div class="form-group" id="ticket" data-id="${ticket.id}">
                                 <a href="/ticket/${ticket.id}">${ticket.label}</a>
-                                <#if ticket.creator.username = name>
+                                <#if ticket.creator.username = name || isAdmin>
                                     <div>
                                         <form method="post" action="/delete">
                                             <input type="hidden" name="ticketId" value="${ticket.id}"/>
@@ -101,7 +100,7 @@
                         <#if ticket.status = "InProgress">
                             <div class="form-group" id="ticket" data-id="${ticket.id}">
                                 <a href="/ticket/${ticket.id}">${ticket.label}</a>
-                                <#if ticket.creator.username = name>
+                                <#if ticket.creator.username = name || isAdmin>
                                     <div>
                                         <form method="post" action="/delete">
                                             <input type="hidden" name="ticketId" value="${ticket.id}"/>
@@ -135,7 +134,7 @@
                         <#if ticket.status = "InTest">
                             <div class="form-group" id="ticket" data-id="${ticket.id}">
                                 <a href="/ticket/${ticket.id}">${ticket.label}</a>
-                                <#if ticket.creator.username = name>
+                                <#if ticket.creator.username = name || isAdmin>
                                     <div>
                                         <form method="post" action="/delete">
                                             <input type="hidden" name="ticketId" value="${ticket.id}"/>
@@ -169,7 +168,7 @@
                         <#if ticket.status = "Done">
                             <div class="form-group" id="ticket" data-id="${ticket.id}">
                                 <a href="/ticket/${ticket.id}">${ticket.label}</a>
-                                <#if ticket.creator.username = name>
+                                <#if ticket.creator.username = name || isAdmin>
                                     <div>
                                         <form method="post" action="/delete">
                                             <input type="hidden" name="ticketId" value="${ticket.id}"/>

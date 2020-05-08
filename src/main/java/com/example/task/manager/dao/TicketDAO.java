@@ -18,7 +18,7 @@ public interface TicketDAO {
 
     List<Ticket> getTicketByTime(Date time);
 
-    List<Ticket> getTicketByCreator(User user);
+    List<Ticket> getTicketByCreator(Long userId);
 
     List<Ticket> getByAllFilters(User creator, String type, Date time);
 

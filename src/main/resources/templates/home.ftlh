@@ -1,7 +1,5 @@
 <#import "parts/common.ftlh" as c>
 
 <@c.page>
-    <#list users as user>
-        <div>${user}</div>
-    </#list>
+    <h1>Welcome to the best organizing tool in the world!</h1>
 </@c.page>

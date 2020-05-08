@@ -1,5 +1,6 @@
 package com.example.task.manager.service;
 
+import com.example.task.manager.dao.TicketDAO;
 import com.example.task.manager.dao.UserDAO;
 import com.example.task.manager.model.User;
 import com.example.task.manager.model.enums.Role;
@@ -17,10 +18,12 @@ import java.util.List;
 public class UserService implements UserDetailsService {
 
     private UserDAO userDAO;
+    private TicketDAO ticketDAO;
 
     @Autowired
-    public UserService (UserDAO userDAO) {
+    public UserService(UserDAO userDAO, TicketDAO ticketDAO) {
         this.userDAO = userDAO;
+        this.ticketDAO = ticketDAO;
     }
 
     @Override
@@ -28,13 +31,13 @@ public class UserService implements UserDetailsService {
 
         User user = userDAO.getUserByLogin(username);
 
-        if(user.getUsername() == null){
+        if (user.getUsername() == null) {
             throw new UsernameNotFoundException("User not authorized.");
         }
 
         GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().toString());
 
-        return new User(user.getId() , user.getUsername(), user.getPassword(),
+        return new User(user.getId(), user.getUsername(), user.getPassword(),
                 Role.valueOf(authority.getAuthority()), true);
     }
 
@@ -45,5 +48,24 @@ public class UserService implements UserDetailsService {
     public boolean addUser(User user) {
 
         return userDAO.addUser(user);
+    }
+
+    public User getUserById(Long id) {
+
+        return userDAO.getUserById(id);
+    }
+
+    public boolean updateUser(User user) {
+        return userDAO.updateUser(user);
+    }
+
+    public boolean deleteUser(Long userId) {
+
+        userDAO.deleteExecutor(userId);
+        userDAO.deleteTicketsExecutors(ticketDAO.getTicketByCreator(userId));
+        userDAO.deleteAllUserTickets(userId);
+        userDAO.deleteUser(userId);
+
+        return true;
     }
 }

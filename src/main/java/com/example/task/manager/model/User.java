@@ -21,6 +21,10 @@ public class User implements UserDetails {
     private Role role;
     private boolean active;
 
+    public boolean isAdmin() {
+        return this.role.equals(Role.Admin);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         ArrayList<Role> roles = new ArrayList<>();
