@@ -33,10 +33,7 @@ public class UserController {
 
         User user = userService.getUserById(userId);
 
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("password", user.getPassword());
-        model.addAttribute("id", user.getId());
-        model.addAttribute("userRole", user.getRole());
+        model.addAttribute("targetUser", user);
         model.addAttribute("roles", Role.values());
 
         return "userPage";
@@ -58,24 +55,29 @@ public class UserController {
 
         userService.updateUser(user);
 
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("password", user.getPassword());
-        model.addAttribute("userRole", user.getRole());
-        model.addAttribute("id", user.getId());
+        model.addAttribute("targetUser", user);
         model.addAttribute("roles", Role.values());
 
         return "userPage";
     }
 
-    @PostMapping("/delete")
-    public String deleteUser(
-            @RequestParam Long deleteId
+    @PostMapping("/block")
+    public String disableUser(
+            @RequestParam Long disableId
     ) {
 
-        System.out.println(deleteId);
+        userService.disableUser(disableId);
 
-        userService.deleteUser(deleteId);
+        return "redirect:/user/" + disableId;
+    }
 
-        return "redirect:/user";
+    @PostMapping("/unblock")
+    public String enableUser(
+            @RequestParam Long enableId
+    ) {
+
+        userService.enableUser(enableId);
+
+        return "redirect:/user/" + enableId;
     }
 }

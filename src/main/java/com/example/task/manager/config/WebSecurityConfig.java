@@ -18,7 +18,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserService userService;
 
     @Autowired
-    public WebSecurityConfig (UserService userService) {
+    public WebSecurityConfig(UserService userService) {
         this.userService = userService;
     }
 
@@ -27,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                     .antMatchers("/", "/registration").permitAll()
-                    .anyRequest().authenticated()
+                    .anyRequest().fullyAuthenticated()
                 .and()
                     .formLogin()
                     .loginPage("/login")

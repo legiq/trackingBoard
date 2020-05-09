@@ -1,7 +1,5 @@
 getAllTickets: select * from tickets
 findTicketById: select * from tickets where tickets.id = ?
-findTicketByType: select * from tickets where type = ?::ticket_type
-findTicketByTime: select * from tickets where time = ?
 findTicketByCreator: select * from tickets where creator_id = ?
 deleteTicketExecutors: delete from tickets_executors where ticket_id = ?
 deleteTicket: delete from tickets where id = ?
@@ -14,10 +12,6 @@ insertTicket: |
   values(?,?,?,?::ticket_type,?::ticket_status,?::ticket_component[],?,?)
 addExecutorToTicket: insert into tickets_executors (ticket_id, executor_id) values (?,?)
 getStoryTickets: select * from tickets where story_id = ?
-findTicketsByAllFilters: select * from tickets where creator_id = ? and type = ?::ticket_type and time = ?
-findTicketsByCreatorAndTime: select * from tickets where creator_id = ? and time = ?
-findTicketsByCreatorAndType: select * from tickets where creator_id = ? and type = ?::ticket_type
-findTicketsByTimeAndType: select * from tickets where time = ? and type = ?::ticket_type
 deleteExecutorFromTicket: delete from tickets_executors where ticket_id = ? and executor_id = ?
 
 
