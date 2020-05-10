@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WithUserDetails("user")
 @TestPropertySource("/application-test.properties")
-@Sql(value={"/create-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(value={"/create-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value={"/create-before-new.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Transactional
 public class MainControllerTest {
 
     @Autowired
@@ -69,6 +69,9 @@ public class MainControllerTest {
                 .with(csrf()))
                 .andDo(print())
                 .andExpect(authenticated())
-                .andExpect(xpath("//*[@id=\"ticket\"]").nodeCount(3));
+                .andExpect(xpath("//*[@id=\"ticket\"]").nodeCount(3))
+                .andExpect(xpath("//*[@id=\"ticket\"][@data-id=1]").exists())
+                .andExpect(xpath("//*[@id=\"ticket\"][@data-id=2]").exists())
+                .andExpect(xpath("//*[@id=\"ticket\"][@data-id=10]").exists());
     }
 }
