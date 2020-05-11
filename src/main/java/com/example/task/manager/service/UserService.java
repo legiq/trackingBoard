@@ -7,7 +7,6 @@ import com.example.task.manager.model.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,11 +19,13 @@ public class UserService implements UserDetailsService {
 
     private UserDAO userDAO;
     private TicketDAO ticketDAO;
+    private AuthService authService;
 
     @Autowired
-    public UserService(UserDAO userDAO, TicketDAO ticketDAO) {
+    public UserService(UserDAO userDAO, TicketDAO ticketDAO, AuthService authService) {
         this.userDAO = userDAO;
         this.ticketDAO = ticketDAO;
+        this.authService = authService;
     }
 
     @Override
@@ -44,35 +45,35 @@ public class UserService implements UserDetailsService {
 
     public List<User> getAllUsers() {
 
-        isBlocked();
+        authService.isBlocked();
 
         return userDAO.getAllUsers();
     }
 
     public boolean addUser(User user) {
 
-        isBlocked();
+        authService.isBlocked();
 
         return userDAO.addUser(user);
     }
 
     public User getUserById(Long id) {
 
-        isBlocked();
+        authService.isBlocked();
 
         return userDAO.getUserById(id);
     }
 
     public boolean updateUser(User user) {
 
-        isBlocked();
+        authService.isBlocked();
 
         return userDAO.updateUser(user);
     }
 
     public boolean deleteUser(Long userId) {
 
-        isBlocked();
+        authService.isBlocked();
 
         userDAO.deleteExecutor(userId);
         userDAO.deleteTicketsExecutors(ticketDAO.getTicketByCreator(userId));
@@ -84,7 +85,7 @@ public class UserService implements UserDetailsService {
 
     public void disableUser(Long disableId) {
 
-        isBlocked();
+        authService.isBlocked();
 
         User user = userDAO.getUserById(disableId);
 
@@ -95,23 +96,13 @@ public class UserService implements UserDetailsService {
 
     public void enableUser(Long disableId) {
 
-        isBlocked();
+        authService.isBlocked();
 
         User user = userDAO.getUserById(disableId);
 
         user.setActive(true);
 
         userDAO.updateUser(user);
-    }
-
-    public void isBlocked() {
-
-        User currentUser = userDAO.getUserById(
-                ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
-
-        if(!currentUser.isEnabled()) {
-            SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
-        }
     }
 
 }

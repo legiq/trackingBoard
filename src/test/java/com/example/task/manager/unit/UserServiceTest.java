@@ -3,12 +3,15 @@ package com.example.task.manager.unit;
 import com.example.task.manager.dao.UserDAO;
 import com.example.task.manager.model.User;
 import com.example.task.manager.model.enums.Role;
+import com.example.task.manager.service.AuthService;
 import com.example.task.manager.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.event.annotation.BeforeTestMethod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +23,19 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @SpringBootTest
 class UserServiceTest {
 
-    @Autowired
+    @InjectMocks
     private UserService userService;
 
-    @MockBean
+    @Mock
     private UserDAO userDAO;
+
+    @Mock
+    private AuthService authService;
+
+    @BeforeTestMethod
+    public void initMocks(){
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     public void addUserTest() {

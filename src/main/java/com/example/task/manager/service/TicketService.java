@@ -20,39 +20,39 @@ public class TicketService {
 
     private UserDAO userDAO;
     private TicketDAO ticketDAO;
-    private UserService userService;
+    private AuthService authService;
 
     @Autowired
-    public TicketService(UserDAO userDAO, TicketDAO ticketDAO, UserService userService) {
+    public TicketService(UserDAO userDAO, TicketDAO ticketDAO, AuthService authService) {
         this.userDAO = userDAO;
         this.ticketDAO = ticketDAO;
-        this.userService = userService;
+        this.authService = authService;
     }
 
     public Ticket getTicketById(Long id) {
 
-        userService.isBlocked();
+        authService.isBlocked();
 
         return ticketDAO.getTicketById(id);
     }
 
     public List<Ticket> getAllTickets() {
 
-        userService.isBlocked();
+        authService.isBlocked();
 
         return ticketDAO.getAllTickets();
     }
 
     public List<Ticket> getAllStoryTickets(Ticket story) {
 
-        userService.isBlocked();
+        authService.isBlocked();
 
         return ticketDAO.getAllStoryTickets(story);
     }
 
     public List<Ticket> getTicketsByFilter(String filterByType, String filterByCreator, String filterByTime) {
 
-        userService.isBlocked();
+        authService.isBlocked();
 
         return ticketDAO.getAllTickets().stream()
                 .filter(t -> filterByType.isEmpty() || t.getType().toString().equals(filterByType))
@@ -65,7 +65,7 @@ public class TicketService {
                           String type, String status, String components, Long storyId
     ) {
 
-        userService.isBlocked();
+        authService.isBlocked();
 
         List<User> executors = new ArrayList<>();
 
@@ -91,7 +91,7 @@ public class TicketService {
 
     public void deleteTicket(Long ticketId) {
 
-        userService.isBlocked();
+        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
 
@@ -100,7 +100,7 @@ public class TicketService {
 
     public Ticket updateDescriptionAndGet(Long ticketId, String description) {
 
-        userService.isBlocked();
+        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         ticket.setDescription(description);
@@ -111,7 +111,7 @@ public class TicketService {
 
     public void addExecutorToTicket(Long ticketId, String username) {
 
-        userService.isBlocked();
+        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         List<User> executors = ticket.getExecutors();
@@ -123,7 +123,7 @@ public class TicketService {
 
     public void updateToNextStatus(Long ticketId) {
 
-        userService.isBlocked();
+        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         ticket.setStatus(ticket.getStatus().getNextStatus());
@@ -132,7 +132,7 @@ public class TicketService {
 
     public void updateToTodoStatus(Long ticketId) {
 
-        userService.isBlocked();
+        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         ticket.setStatus(Status.ToDo);
@@ -141,7 +141,7 @@ public class TicketService {
 
     public void updateStoryId(Long ticketId, Long newStoryId) {
 
-        userService.isBlocked();
+        authService.isBlocked();
 
         Ticket subTicket = ticketDAO.getTicketById(ticketId);
         subTicket.setStoryId(newStoryId);
@@ -150,7 +150,7 @@ public class TicketService {
 
     public void deleteExecutorFromTicket(Long ticketId, Long executorId) {
 
-        userService.isBlocked();
+        authService.isBlocked();
 
         ticketDAO.deleteExecutorFromTicket(ticketId, executorId);
     }
