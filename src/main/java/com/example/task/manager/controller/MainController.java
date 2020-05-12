@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class MainController {
 
     private TicketService ticketService;
+    private static final String ticketsAttribute = "tickets";
+    private static final String mainTemplate = "tickets";
+    private static final String redirectToMainURL = "redirect:/main";
 
     @Autowired
     public MainController(TicketService ticketService) {
@@ -25,9 +28,9 @@ public class MainController {
             Model model
     ) {
 
-        model.addAttribute("tickets", ticketService.getAllTickets());
+        model.addAttribute(ticketsAttribute, ticketService.getAllTickets());
 
-        return "main";
+        return mainTemplate;
     }
 
     @PostMapping("/filter")
@@ -38,14 +41,14 @@ public class MainController {
             Model model
     ) {
 
-        model.addAttribute("tickets",
+        model.addAttribute(ticketsAttribute,
                 ticketService.getTicketsByFilter(filterByType, filterByCreator, filterByTime));
 
         model.addAttribute("filterByType", filterByType);
         model.addAttribute("filterByTime", filterByTime);
         model.addAttribute("filterByCreator", filterByCreator);
 
-        return "main";
+        return mainTemplate;
     }
 
     @PostMapping("/main")
@@ -62,9 +65,9 @@ public class MainController {
 
         ticketService.addTicket(user, label, description, executorLogin, type, status, components, 0L);
 
-        model.addAttribute("tickets", ticketService.getAllTickets());
+        model.addAttribute(ticketsAttribute, ticketService.getAllTickets());
 
-        return "main";
+        return mainTemplate;
     }
 
     @PostMapping("/delete")
@@ -74,6 +77,6 @@ public class MainController {
 
         ticketService.deleteTicket(ticketId);
 
-        return "redirect:/main";
+        return redirectToMainURL;
     }
 }

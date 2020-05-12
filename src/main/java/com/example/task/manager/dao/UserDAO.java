@@ -9,7 +9,7 @@ public interface UserDAO {
 
     User getUserById(Long id);
 
-    List<User> getUsersFromTicket(Long executor_id);
+    List<User> getUsersFromTicket(Long executorId);
 
     User getUserByLogin(String login);
 

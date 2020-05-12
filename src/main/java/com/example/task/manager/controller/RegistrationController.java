@@ -2,6 +2,7 @@ package com.example.task.manager.controller;
 
 import com.example.task.manager.model.User;
 import com.example.task.manager.model.enums.Role;
+import com.example.task.manager.service.AuthService;
 import com.example.task.manager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,15 +14,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class RegistrationController {
 
     private UserService userService;
+    private AuthService authService;
+    private static String registrationTemplate = "registration";
+    private static String messageAttribute = "message";
+    private static String redirectToLoginURL = "message";
 
     @Autowired
-    public RegistrationController(UserService userService) {
+    public RegistrationController(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
     }
 
     @GetMapping("/registration")
     public String registration() {
-        return "registration";
+        return registrationTemplate;
     }
 
     @PostMapping("/registration")
@@ -29,15 +35,20 @@ public class RegistrationController {
 
         if(user.getRole().equals(Role.Admin)) {
 
-            model.addAttribute("message", "Can't register as admin");
+            model.addAttribute(messageAttribute, "Can't register as admin");
 
-            return "registration";
+            return registrationTemplate;
+        } else if (authService.isExists(user.getUsername())) {
+
+            model.addAttribute(messageAttribute, "User with such login already exists");
+
+            return registrationTemplate;
         } else {
 
             user.setActive(true);
             userService.addUser(user);
 
-            return "redirect:/login";
+            return redirectToLoginURL;
         }
     }
 }

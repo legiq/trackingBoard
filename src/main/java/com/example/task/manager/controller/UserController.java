@@ -2,6 +2,7 @@ package com.example.task.manager.controller;
 
 import com.example.task.manager.model.User;
 import com.example.task.manager.model.enums.Role;
+import com.example.task.manager.service.AuthService;
 import com.example.task.manager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,10 +16,14 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private UserService userService;
+    private AuthService authService;
+    private static final String redirectToPageURL = "redirect:/user/";
+    private static final String pageTemplate = "userPage";
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
     }
 
     @GetMapping
@@ -36,7 +41,7 @@ public class UserController {
         model.addAttribute("targetUser", user);
         model.addAttribute("roles", Role.values());
 
-        return "userPage";
+        return pageTemplate;
     }
 
     @PostMapping("{userId}")
@@ -49,6 +54,14 @@ public class UserController {
     ) {
 
         User user = userService.getUserById(userId);
+
+        if (!user.getUsername().equals(username) && authService.isExists(username)) {
+
+            model.addAttribute("message", "User with such login already exists");
+
+            return pageTemplate;
+        }
+
         user.setUsername(username);
         user.setPassword(password);
         user.setRole(Role.valueOf(roleRadio));
@@ -58,7 +71,7 @@ public class UserController {
         model.addAttribute("targetUser", user);
         model.addAttribute("roles", Role.values());
 
-        return "userPage";
+        return pageTemplate;
     }
 
     @PostMapping("/block")
@@ -68,7 +81,7 @@ public class UserController {
 
         userService.disableUser(disableId);
 
-        return "redirect:/user/" + disableId;
+        return redirectToPageURL + disableId;
     }
 
     @PostMapping("/unblock")
@@ -78,6 +91,6 @@ public class UserController {
 
         userService.enableUser(enableId);
 
-        return "redirect:/user/" + enableId;
+        return redirectToPageURL + enableId;
     }
 }

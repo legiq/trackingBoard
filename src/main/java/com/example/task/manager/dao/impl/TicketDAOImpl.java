@@ -24,17 +24,17 @@ public class TicketDAOImpl implements TicketDAO {
     private JdbcTemplate jdbcTemplate;
     private TicketMapper ticketMapper;
 
-    private final String SQL_GET_ALL;
-    private final String SQL_FIND_TICKET_BY_ID;
-    private final String SQL_FIND_TICKET_BY_CREATOR;
-    private final String SQL_DELETE_TICKET_EXECUTORS;
-    private final String SQL_DELETE_TICKET;
-    private final String SQL_UPDATE_TICKET;
-    private final String SQL_INSERT_TICKET_EXECUTORS;
-    private final String SQL_INSERT_TICKET;
-    private final String SQL_ADD_EXECUTOR_TO_TICKET;
-    private final String SQL_GET_ALL_STORY_TICKETS;
-    private final String SQL_DELETE_EXECUTOR_FROM_TICKET;
+    private final String sqlGetAll;
+    private final String sqlFindTicketById;
+    private final String sqlFindTicketByCreator;
+    private final String sqlDeleteAllTicketExecutors;
+    private final String sqlDeleteTicket;
+    private final String sqlUpdateTicket;
+    private final String sqlInsertTicketExecutors;
+    private final String sqlInsertTicket;
+    private final String sqlAddExecutorToTicket;
+    private final String sqlGetAllStoryTicket;
+    private final String sqlDeleteExecutorFromTicket;
 
     @Autowired
     public TicketDAOImpl(DataSource dataSource, UserDAO userDAO) throws IOException {
@@ -47,32 +47,32 @@ public class TicketDAOImpl implements TicketDAO {
                 .findAndRegisterModules()
                 .readValue(new File("src/main/resources/ticketQuery.yml"), TicketQuery.class);
 
-        SQL_GET_ALL = ticketQuery.getGetAllTickets();
-        SQL_FIND_TICKET_BY_ID = ticketQuery.getFindTicketById();
-        SQL_FIND_TICKET_BY_CREATOR = ticketQuery.getFindTicketByCreator();
-        SQL_DELETE_TICKET_EXECUTORS = ticketQuery.getDeleteTicketExecutors();
-        SQL_DELETE_TICKET = ticketQuery.getDeleteTicket();
-        SQL_UPDATE_TICKET = ticketQuery.getUpdateTicket();
-        SQL_INSERT_TICKET_EXECUTORS = ticketQuery.getInsertTicketExecutors();
-        SQL_INSERT_TICKET = ticketQuery.getInsertTicket();
-        SQL_ADD_EXECUTOR_TO_TICKET = ticketQuery.getAddExecutorToTicket();
-        SQL_GET_ALL_STORY_TICKETS = ticketQuery.getGetStoryTickets();
-        SQL_DELETE_EXECUTOR_FROM_TICKET = ticketQuery.getDeleteExecutorFromTicket();
+        sqlGetAll = ticketQuery.getGetAllTickets();
+        sqlFindTicketById = ticketQuery.getFindTicketById();
+        sqlFindTicketByCreator = ticketQuery.getFindTicketByCreator();
+        sqlDeleteAllTicketExecutors = ticketQuery.getDeleteTicketExecutors();
+        sqlDeleteTicket = ticketQuery.getDeleteTicket();
+        sqlUpdateTicket = ticketQuery.getUpdateTicket();
+        sqlInsertTicketExecutors = ticketQuery.getInsertTicketExecutors();
+        sqlInsertTicket = ticketQuery.getInsertTicket();
+        sqlAddExecutorToTicket = ticketQuery.getAddExecutorToTicket();
+        sqlGetAllStoryTicket = ticketQuery.getGetStoryTickets();
+        sqlDeleteExecutorFromTicket = ticketQuery.getDeleteExecutorFromTicket();
     }
 
     @Override
     public List<Ticket> getAllTickets() {
-        return jdbcTemplate.query(SQL_GET_ALL, ticketMapper);
+        return jdbcTemplate.query(sqlGetAll, ticketMapper);
     }
 
     @Override
     public Ticket getTicketById(Long id) {
-        return jdbcTemplate.queryForObject(SQL_FIND_TICKET_BY_ID, new Object[] { id }, ticketMapper);
+        return jdbcTemplate.queryForObject(sqlFindTicketById, new Object[] { id }, ticketMapper);
     }
 
     @Override
     public List<Ticket> getTicketByCreator(Long userId) {
-        return jdbcTemplate.query(SQL_FIND_TICKET_BY_CREATOR, new Object[] { userId }, ticketMapper);
+        return jdbcTemplate.query(sqlFindTicketByCreator, new Object[] { userId }, ticketMapper);
     }
 
     @Override
@@ -83,9 +83,9 @@ public class TicketDAOImpl implements TicketDAO {
             updateTicket(subTicket);
         }
 
-        jdbcTemplate.update(SQL_DELETE_TICKET_EXECUTORS, ticket.getId());
+        jdbcTemplate.update(sqlDeleteAllTicketExecutors, ticket.getId());
 
-        return jdbcTemplate.update(SQL_DELETE_TICKET, ticket.getId()) > 0;
+        return jdbcTemplate.update(sqlDeleteTicket, ticket.getId()) > 0;
     }
 
     @Override
@@ -95,7 +95,7 @@ public class TicketDAOImpl implements TicketDAO {
                 .map(Enum::toString)
                 .toArray(String[]::new);
 
-        return jdbcTemplate.update(SQL_UPDATE_TICKET, ticket.getLabel(), ticket.getDescription(),
+        return jdbcTemplate.update(sqlUpdateTicket, ticket.getLabel(), ticket.getDescription(),
                 ticket.getCreator().getId(), ticket.getType().toString(),
                 ticket.getStatus().toString(), components, ticket.getTime(),
                 ticket.getStoryId() == 0 ? null : ticket.getStoryId(), ticket.getId()) > 0;
@@ -108,7 +108,7 @@ public class TicketDAOImpl implements TicketDAO {
                 .map(Enum::toString)
                 .toArray(String[]::new);
 
-        int result = jdbcTemplate.update(SQL_INSERT_TICKET, ticket.getLabel(), ticket.getDescription(),
+        int result = jdbcTemplate.update(sqlInsertTicket, ticket.getLabel(), ticket.getDescription(),
                 ticket.getCreator().getId(), ticket.getType().toString(),
                 ticket.getStatus().toString(), components, ticket.getTime(),
                 ticket.getStoryId());
@@ -119,7 +119,7 @@ public class TicketDAOImpl implements TicketDAO {
                 .orElse(0L);
 
         for(User user : ticket.getExecutors()) {
-            jdbcTemplate.update(SQL_INSERT_TICKET_EXECUTORS, ticketIndex, user.getId());
+            jdbcTemplate.update(sqlInsertTicketExecutors, ticketIndex, user.getId());
         }
 
         return  result > 0;
@@ -130,17 +130,17 @@ public class TicketDAOImpl implements TicketDAO {
 
         List<User> executors = ticket.getExecutors();
 
-        return jdbcTemplate.update(SQL_ADD_EXECUTOR_TO_TICKET, ticket.getId(),
+        return jdbcTemplate.update(sqlAddExecutorToTicket, ticket.getId(),
                 executors.get(executors.size()-1).getId()) > 0;
     }
 
     @Override
     public List<Ticket> getAllStoryTickets(Ticket story) {
-        return jdbcTemplate.query(SQL_GET_ALL_STORY_TICKETS, new Object[]{story.getId()}, ticketMapper);
+        return jdbcTemplate.query(sqlGetAllStoryTicket, new Object[]{story.getId()}, ticketMapper);
     }
 
     @Override
     public boolean deleteExecutorFromTicket(Long ticketId, Long executorId) {
-        return jdbcTemplate.update(SQL_DELETE_EXECUTOR_FROM_TICKET, ticketId, executorId) > 0;
+        return jdbcTemplate.update(sqlDeleteExecutorFromTicket, ticketId, executorId) > 0;
     }
 }

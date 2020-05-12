@@ -10,7 +10,6 @@ import com.example.task.manager.model.enums.Status;
 import com.example.task.manager.model.enums.Type;
 import com.example.task.manager.service.AuthService;
 import com.example.task.manager.service.TicketService;
-import com.example.task.manager.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,7 @@ public class TicketServiceTest {
     }
 
     @Test
-    public void geTicketByIdTest() {
+    public void getTicketByIdTest() {
 
         Mockito.when(ticketDAO.getTicketById(1L)).thenReturn(createTestList().get(0));
 

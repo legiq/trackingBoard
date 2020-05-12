@@ -1,9 +1,7 @@
 package com.example.task.manager.dao;
 
 import com.example.task.manager.model.Ticket;
-import com.example.task.manager.model.User;
 
-import java.util.Date;
 import java.util.List;
 
 public interface TicketDAO {

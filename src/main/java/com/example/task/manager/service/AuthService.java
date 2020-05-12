@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class AuthService {
 
@@ -24,5 +27,14 @@ public class AuthService {
         if(!currentUser.isEnabled()) {
             SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
         }
+    }
+
+    public boolean isExists(String username) {
+
+        List<String> users = userDAO.getAllUsers().stream()
+                .map(User::getUsername)
+                .collect(Collectors.toList());
+
+        return users.contains(username);
     }
 }
