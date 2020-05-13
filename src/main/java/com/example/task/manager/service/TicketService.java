@@ -9,115 +9,65 @@ import com.example.task.manager.model.enums.Status;
 import com.example.task.manager.model.enums.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Transactional
 public class TicketService {
 
     private UserDAO userDAO;
     private TicketDAO ticketDAO;
+    private AuthService authService;
 
     @Autowired
-    public TicketService(UserDAO userDAO, TicketDAO ticketDAO) {
+    public TicketService(UserDAO userDAO, TicketDAO ticketDAO, AuthService authService) {
         this.userDAO = userDAO;
         this.ticketDAO = ticketDAO;
+        this.authService = authService;
     }
 
     public Ticket getTicketById(Long id) {
+
+        authService.isBlocked();
+
         return ticketDAO.getTicketById(id);
     }
 
     public List<Ticket> getAllTickets() {
+
+        authService.isBlocked();
+
         return ticketDAO.getAllTickets();
     }
 
     public List<Ticket> getAllStoryTickets(Ticket story) {
+
+        authService.isBlocked();
+
         return ticketDAO.getAllStoryTickets(story);
     }
 
     public List<Ticket> getTicketsByFilter(String filterByType, String filterByCreator, String filterByTime) {
 
-        List<Ticket> tickets;
+        authService.isBlocked();
 
-        if (!filterByCreator.isEmpty() || !filterByType.isEmpty() || !filterByTime.isEmpty()) {
-
-            List<String> types = Stream.of(Type.values())
-                    .map(Type::toString)
-                    .collect(Collectors.toList());
-
-            List<String> creators = userDAO.getAllUsers().stream()
-                    .map(User::getUsername)
-                    .collect(Collectors.toList());
-
-            if (creators.contains(filterByCreator) && types.contains(filterByType) && !filterByTime.isEmpty()) {
-
-                try {
-                    tickets = ticketDAO.getByAllFilters(userDAO.getUserByLogin(filterByCreator),
-                            filterByType,
-                            Date.valueOf(filterByTime));
-                } catch (Exception ex) {
-                    tickets = Collections.emptyList();
-                }
-
-            } else if (creators.contains(filterByCreator) && !filterByTime.isEmpty() && filterByType.isEmpty()) {
-
-                try {
-                    tickets = ticketDAO.getByCreatorAndTime(userDAO.getUserByLogin(filterByCreator),
-                            Date.valueOf(filterByTime));
-                } catch (Exception ex) {
-                    tickets = Collections.emptyList();
-                }
-
-            } else if (creators.contains(filterByCreator) && types.contains(filterByType) && filterByTime.isEmpty()) {
-
-                tickets = ticketDAO.getByCreatorAndType(userDAO.getUserByLogin(filterByCreator), filterByType);
-
-            } else if (!filterByTime.isEmpty() && types.contains(filterByType) && filterByCreator.isEmpty()) {
-
-                try {
-                    tickets = ticketDAO.getByTimeAndType(Date.valueOf(filterByTime), filterByType);
-                } catch (Exception ex) {
-                    tickets = Collections.emptyList();
-                }
-
-            } else if (creators.contains(filterByCreator) && filterByTime.isEmpty() && filterByType.isEmpty()) {
-
-                tickets = ticketDAO.getTicketByCreator(userDAO.getUserByLogin(filterByCreator));
-
-            } else if (!filterByTime.isEmpty() && filterByCreator.isEmpty() && filterByType.isEmpty()) {
-
-                try {
-                    tickets = ticketDAO.getTicketByTime(Date.valueOf(filterByTime));
-                } catch (Exception ex) {
-                    tickets = Collections.emptyList();
-                }
-
-            } else if (types.contains(filterByType) && filterByCreator.isEmpty() && filterByTime.isEmpty()) {
-
-                tickets = ticketDAO.getTicketByType(filterByType);
-
-            } else {
-                tickets = Collections.emptyList();
-            }
-
-        } else {
-
-            tickets = ticketDAO.getAllTickets();
-
-        }
-
-        return tickets;
+        return ticketDAO.getAllTickets().stream()
+                .filter(t -> filterByType.isEmpty() || t.getType().toString().equals(filterByType))
+                .filter(t -> filterByCreator.isEmpty() || t.getCreator().getUsername().equals(filterByCreator))
+                .filter(t -> filterByTime.isEmpty() || t.getTime().toString().equals(filterByTime))
+                .collect(Collectors.toList());
     }
 
     public void addTicket(User user, String label, String description, String executorLogin,
                           String type, String status, String components, Long storyId
     ) {
+
+        authService.isBlocked();
 
         List<User> executors = new ArrayList<>();
 
@@ -143,12 +93,16 @@ public class TicketService {
 
     public void deleteTicket(Long ticketId) {
 
+        authService.isBlocked();
+
         Ticket ticket = ticketDAO.getTicketById(ticketId);
 
         ticketDAO.deleteTicket(ticket);
     }
 
     public Ticket updateDescriptionAndGet(Long ticketId, String description) {
+
+        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         ticket.setDescription(description);
@@ -158,6 +112,8 @@ public class TicketService {
     }
 
     public void addExecutorToTicket(Long ticketId, String username) {
+
+        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         List<User> executors = ticket.getExecutors();
@@ -169,12 +125,16 @@ public class TicketService {
 
     public void updateToNextStatus(Long ticketId) {
 
+        authService.isBlocked();
+
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         ticket.setStatus(ticket.getStatus().getNextStatus());
         ticketDAO.updateTicket(ticket);
     }
 
     public void updateToTodoStatus(Long ticketId) {
+
+        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         ticket.setStatus(Status.ToDo);
@@ -183,12 +143,17 @@ public class TicketService {
 
     public void updateStoryId(Long ticketId, Long newStoryId) {
 
+        authService.isBlocked();
+
         Ticket subTicket = ticketDAO.getTicketById(ticketId);
         subTicket.setStoryId(newStoryId);
         ticketDAO.updateTicket(subTicket);
     }
 
     public void deleteExecutorFromTicket(Long ticketId, Long executorId) {
+
+        authService.isBlocked();
+
         ticketDAO.deleteExecutorFromTicket(ticketId, executorId);
     }
 }

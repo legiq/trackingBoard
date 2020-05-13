@@ -7,3 +7,6 @@ insertUser: insert into users (login, password, role, active) values(?,?,?::user
 findUserByTicket: |
   SELECT * FROM users join tickets_executors
   on users.id = tickets_executors.executor_id where tickets_executors.ticket_id = ?
+deleteExecutor: delete from tickets_executors where executor_id = ?
+deleteTicketExecutors: delete from tickets_executors where ticket_id = ?
+deleteAllUserTickets: delete from tickets where creator_id = ?

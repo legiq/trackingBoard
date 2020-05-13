@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Ticket {
 
-    private long id;
+    private Long id;
     private String label;
     private String description;
     private User creator;

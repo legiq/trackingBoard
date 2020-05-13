@@ -15,11 +15,15 @@ import java.util.Collection;
 @AllArgsConstructor
 public class User implements UserDetails {
 
-    private long id;
+    private Long id;
     private String username;
     private String password;
     private Role role;
     private boolean active;
+
+    public boolean isAdmin() {
+        return this.role.equals(Role.Admin);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

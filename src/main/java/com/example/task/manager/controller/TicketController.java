@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 public class TicketController {
 
     private TicketService ticketService;
+    private static final String redirectToTicketURL = "redirect:/ticket/";
+    private static final String ticketAttribute = "ticket";
+    private static final String ticketTemplate = "ticket";
 
     @Autowired
     public TicketController(TicketService ticketService) {
@@ -28,10 +31,10 @@ public class TicketController {
 
         Ticket ticket = ticketService.getTicketById(ticketId);
 
-        model.addAttribute("ticket", ticket);
+        model.addAttribute(ticketAttribute, ticket);
         model.addAttribute("subTickets", ticketService.getAllStoryTickets(ticket));
 
-        return "ticket";
+        return ticketTemplate;
     }
 
     @PostMapping("{ticketId}")
@@ -43,10 +46,10 @@ public class TicketController {
 
         Ticket ticket = ticketService.updateDescriptionAndGet(ticketId, description);
 
-        model.addAttribute("ticket", ticket);
+        model.addAttribute(ticketAttribute, ticket);
         model.addAttribute("subTickets", ticketService.getAllStoryTickets(ticket));
 
-        return "ticket";
+        return ticketTemplate;
     }
 
     @PostMapping("/add")
@@ -57,7 +60,7 @@ public class TicketController {
 
         ticketService.addExecutorToTicket(ticketId, username);
 
-        return "redirect:/ticket/" + ticketId;
+        return redirectToTicketURL + ticketId;
     }
 
     @PostMapping("/bug")
@@ -74,7 +77,7 @@ public class TicketController {
 
         ticketService.addTicket(user, label, description, executorLogin, type, status, components, 0L);
 
-        return "redirect:/ticket/" + ticketId;
+        return redirectToTicketURL + ticketId;
     }
 
     @PostMapping("/forward")
@@ -82,7 +85,7 @@ public class TicketController {
 
         ticketService.updateToNextStatus(ticketId);
 
-        return "redirect:/ticket/" + ticketId;
+        return redirectToTicketURL + ticketId;
     }
 
     @PostMapping("/reopen")
@@ -90,7 +93,7 @@ public class TicketController {
 
         ticketService.updateToTodoStatus(ticketId);
 
-        return "redirect:/ticket/" + ticketId;
+        return redirectToTicketURL + ticketId;
     }
 
     @PostMapping("/addSubTicket")
@@ -101,7 +104,7 @@ public class TicketController {
 
         ticketService.updateStoryId(subTicketId, ticketId);
 
-        return "redirect:/ticket/" + ticketId;
+        return redirectToTicketURL + ticketId;
     }
 
     @PostMapping("/deleteSubTicket")
@@ -112,7 +115,7 @@ public class TicketController {
 
         ticketService.updateStoryId(subTicketId, 0L);
 
-        return "redirect:/ticket/" + ticketId;
+        return redirectToTicketURL + ticketId;
     }
 
     @PostMapping("/deleteExecutor")
@@ -123,7 +126,7 @@ public class TicketController {
 
         ticketService.deleteExecutorFromTicket(ticketId, executorId);
 
-        return "redirect:/ticket/" + ticketId;
+        return redirectToTicketURL + ticketId;
     }
 
     @PostMapping("/createSubTicket")
@@ -140,6 +143,6 @@ public class TicketController {
 
         ticketService.addTicket(user, label, description, executorLogin, type, status, components, ticketId);
 
-        return "redirect:/ticket/" + ticketId;
+        return redirectToTicketURL + ticketId;
     }
 }

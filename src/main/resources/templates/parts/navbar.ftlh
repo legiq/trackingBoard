@@ -16,6 +16,11 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/main">Tickets</a>
             </li>
+            <#if isAdmin>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/user">Users</a>
+                </li>
+            </#if>
         </ul>
         <div class="navbar-text mr-3">${name}</div>
         <div class="navbar-text mr-3">${role}</div>

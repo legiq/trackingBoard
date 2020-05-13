@@ -11,8 +11,6 @@ public class TicketQuery {
 
     private String getAllTickets;
     private String findTicketById;
-    private String findTicketByType;
-    private String findTicketByTime;
     private String findTicketByCreator;
     private String deleteTicketExecutors;
     private String deleteTicket;
@@ -21,10 +19,6 @@ public class TicketQuery {
     private String insertTicket;
     private String addExecutorToTicket;
     private String getStoryTickets;
-    private String findTicketsByAllFilters;
-    private String findTicketsByCreatorAndTime;
-    private String findTicketsByCreatorAndType;
-    private String findTicketsByTimeAndType;
     private String deleteExecutorFromTicket;
 
 }

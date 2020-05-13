@@ -18,5 +18,8 @@ public class UserQuery {
     private String getAllUsers;
     private String insertUser;
     private String findUserByTicket;
+    private String deleteExecutor;
+    private String deleteAllUserTickets;
+    private String deleteTicketExecutors;
 
 }
