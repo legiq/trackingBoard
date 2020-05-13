@@ -31,10 +31,10 @@ public class AuthService {
 
     public boolean isExists(String username) {
 
-        List<String> users = userDAO.getAllUsers().stream()
+        List<String> usersNames = userDAO.getAllUsers().stream()
                 .map(User::getUsername)
                 .collect(Collectors.toList());
 
-        return users.contains(username);
+        return usersNames.contains(username);
     }
 }

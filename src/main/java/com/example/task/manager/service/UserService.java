@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -105,6 +106,13 @@ public class UserService implements UserDetailsService {
         user.setActive(true);
 
         userDAO.updateUser(user);
+    }
+
+    public List<User> getAllNonAdminUsers() {
+
+        return getAllUsers().stream()
+                .filter(u -> !u.getRole().equals(Role.Admin))
+                .collect(Collectors.toList());
     }
 
 }

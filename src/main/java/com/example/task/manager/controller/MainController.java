@@ -15,7 +15,7 @@ public class MainController {
 
     private TicketService ticketService;
     private static final String ticketsAttribute = "tickets";
-    private static final String mainTemplate = "tickets";
+    private static final String mainTemplate = "main";
     private static final String redirectToMainURL = "redirect:/main";
 
     @Autowired
