@@ -8,13 +8,12 @@ import com.example.task.manager.model.enums.Components;
 import com.example.task.manager.model.enums.Role;
 import com.example.task.manager.model.enums.Status;
 import com.example.task.manager.model.enums.Type;
-import com.example.task.manager.service.AuthService;
 import com.example.task.manager.service.TicketService;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,18 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class TicketServiceTest {
 
-
-    @Autowired
-    private TicketService ticketService;
-
-    @MockBean
-    private AuthService authService;
-
-    @MockBean
+    @Mock
     private UserDAO userDAO;
 
-    @MockBean
+    @Mock
     private TicketDAO ticketDAO;
+
+    @InjectMocks
+    private TicketService ticketService;
 
     @Test
     public void getAllTicketsTest() {

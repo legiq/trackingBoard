@@ -1,5 +1,6 @@
 package com.example.task.manager.service;
 
+import com.example.task.manager.aop.NonBlockedCheck;
 import com.example.task.manager.dao.TicketDAO;
 import com.example.task.manager.dao.UserDAO;
 import com.example.task.manager.model.User;
@@ -22,13 +23,11 @@ public class UserService implements UserDetailsService {
 
     private UserDAO userDAO;
     private TicketDAO ticketDAO;
-    private AuthService authService;
 
     @Autowired
-    public UserService(UserDAO userDAO, TicketDAO ticketDAO, AuthService authService) {
+    public UserService(UserDAO userDAO, TicketDAO ticketDAO) {
         this.userDAO = userDAO;
         this.ticketDAO = ticketDAO;
-        this.authService = authService;
     }
 
     @Override
@@ -46,37 +45,28 @@ public class UserService implements UserDetailsService {
                 Role.valueOf(authority.getAuthority()), true);
     }
 
+    @NonBlockedCheck
     public List<User> getAllUsers() {
-
-        authService.isBlocked();
-
         return userDAO.getAllUsers();
     }
 
-    public boolean addUser(User user) {
-
-        authService.isBlocked();
-
-        return userDAO.addUser(user);
+    @NonBlockedCheck
+    public void addUser(User user) {
+        userDAO.addUser(user);
     }
 
+    @NonBlockedCheck
     public User getUserById(Long id) {
-
-        authService.isBlocked();
-
         return userDAO.getUserById(id);
     }
 
-    public boolean updateUser(User user) {
-
-        authService.isBlocked();
-
-        return userDAO.updateUser(user);
+    @NonBlockedCheck
+    public void updateUser(User user) {
+        userDAO.updateUser(user);
     }
 
+    @NonBlockedCheck
     public boolean deleteUser(Long userId) {
-
-        authService.isBlocked();
 
         userDAO.deleteExecutor(userId);
         userDAO.deleteTicketsExecutors(ticketDAO.getTicketByCreator(userId));
@@ -86,30 +76,26 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
+    @NonBlockedCheck
     public void disableUser(Long disableId) {
 
-        authService.isBlocked();
-
         User user = userDAO.getUserById(disableId);
-
         user.setActive(false);
 
         userDAO.updateUser(user);
     }
 
+    @NonBlockedCheck
     public void enableUser(Long disableId) {
 
-        authService.isBlocked();
-
         User user = userDAO.getUserById(disableId);
-
         user.setActive(true);
 
         userDAO.updateUser(user);
     }
 
+    @NonBlockedCheck
     public List<User> getAllNonAdminUsers() {
-
         return getAllUsers().stream()
                 .filter(u -> !u.getRole().equals(Role.Admin))
                 .collect(Collectors.toList());

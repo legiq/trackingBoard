@@ -1,5 +1,6 @@
 package com.example.task.manager.service;
 
+import com.example.task.manager.aop.NonBlockedCheck;
 import com.example.task.manager.dao.TicketDAO;
 import com.example.task.manager.dao.UserDAO;
 import com.example.task.manager.model.Ticket;
@@ -22,40 +23,30 @@ public class TicketService {
 
     private UserDAO userDAO;
     private TicketDAO ticketDAO;
-    private AuthService authService;
 
     @Autowired
-    public TicketService(UserDAO userDAO, TicketDAO ticketDAO, AuthService authService) {
+    public TicketService(UserDAO userDAO, TicketDAO ticketDAO) {
         this.userDAO = userDAO;
         this.ticketDAO = ticketDAO;
-        this.authService = authService;
     }
 
+    @NonBlockedCheck
     public Ticket getTicketById(Long id) {
-
-        authService.isBlocked();
-
         return ticketDAO.getTicketById(id);
     }
 
+    @NonBlockedCheck
     public List<Ticket> getAllTickets() {
-
-        authService.isBlocked();
-
         return ticketDAO.getAllTickets();
     }
 
+    @NonBlockedCheck
     public List<Ticket> getAllStoryTickets(Ticket story) {
-
-        authService.isBlocked();
-
         return ticketDAO.getAllStoryTickets(story);
     }
 
+    @NonBlockedCheck
     public List<Ticket> getTicketsByFilter(String filterByType, String filterByCreator, String filterByTime) {
-
-        authService.isBlocked();
-
         return ticketDAO.getAllTickets().stream()
                 .filter(t -> filterByType.isEmpty() || t.getType().toString().equals(filterByType))
                 .filter(t -> filterByCreator.isEmpty() || t.getCreator().getUsername().equals(filterByCreator))
@@ -63,11 +54,10 @@ public class TicketService {
                 .collect(Collectors.toList());
     }
 
+    @NonBlockedCheck
     public void addTicket(User user, String label, String description, String executorLogin,
                           String type, String status, String components, Long storyId
     ) {
-
-        authService.isBlocked();
 
         List<User> executors = new ArrayList<>();
 
@@ -91,18 +81,16 @@ public class TicketService {
         }
     }
 
+    @NonBlockedCheck
     public void deleteTicket(Long ticketId) {
-
-        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
 
         ticketDAO.deleteTicket(ticket);
     }
 
+    @NonBlockedCheck
     public Ticket updateDescriptionAndGet(Long ticketId, String description) {
-
-        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         ticket.setDescription(description);
@@ -111,9 +99,8 @@ public class TicketService {
         return ticket;
     }
 
+    @NonBlockedCheck
     public void addExecutorToTicket(Long ticketId, String username) {
-
-        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         List<User> executors = ticket.getExecutors();
@@ -123,37 +110,32 @@ public class TicketService {
         ticketDAO.addExecutorToTicket(ticket);
     }
 
+    @NonBlockedCheck
     public void updateToNextStatus(Long ticketId) {
-
-        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         ticket.setStatus(ticket.getStatus().getNextStatus());
         ticketDAO.updateTicket(ticket);
     }
 
+    @NonBlockedCheck
     public void updateToTodoStatus(Long ticketId) {
-
-        authService.isBlocked();
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         ticket.setStatus(Status.ToDo);
         ticketDAO.updateTicket(ticket);
     }
 
+    @NonBlockedCheck
     public void updateStoryId(Long ticketId, Long newStoryId) {
-
-        authService.isBlocked();
 
         Ticket subTicket = ticketDAO.getTicketById(ticketId);
         subTicket.setStoryId(newStoryId);
         ticketDAO.updateTicket(subTicket);
     }
 
+    @NonBlockedCheck
     public void deleteExecutorFromTicket(Long ticketId, Long executorId) {
-
-        authService.isBlocked();
-
         ticketDAO.deleteExecutorFromTicket(ticketId, executorId);
     }
 }
