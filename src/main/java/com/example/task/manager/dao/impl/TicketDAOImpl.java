@@ -35,6 +35,7 @@ public class TicketDAOImpl implements TicketDAO {
     private final String sqlAddExecutorToTicket;
     private final String sqlGetAllStoryTicket;
     private final String sqlDeleteExecutorFromTicket;
+    private final String sqlFindTicketByNumber;
 
     @Autowired
     public TicketDAOImpl(DataSource dataSource, UserDAO userDAO) throws IOException {
@@ -58,6 +59,7 @@ public class TicketDAOImpl implements TicketDAO {
         sqlAddExecutorToTicket = ticketQuery.getAddExecutorToTicket();
         sqlGetAllStoryTicket = ticketQuery.getGetStoryTickets();
         sqlDeleteExecutorFromTicket = ticketQuery.getDeleteExecutorFromTicket();
+        sqlFindTicketByNumber = ticketQuery.getFindTicketByNumber();
     }
 
     @Override
@@ -142,5 +144,10 @@ public class TicketDAOImpl implements TicketDAO {
     @Override
     public boolean deleteExecutorFromTicket(Long ticketId, Long executorId) {
         return jdbcTemplate.update(sqlDeleteExecutorFromTicket, ticketId, executorId) > 0;
+    }
+
+    @Override
+    public Ticket getTicketByNumber(Long ticketNumber) {
+        return jdbcTemplate.queryForObject(sqlFindTicketByNumber, new Object[] { ticketNumber }, ticketMapper);
     }
 }

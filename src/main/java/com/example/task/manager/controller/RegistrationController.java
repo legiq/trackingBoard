@@ -17,7 +17,7 @@ public class RegistrationController {
     private AuthService authService;
     private static String registrationTemplate = "registration";
     private static String messageAttribute = "message";
-    private static String redirectToLoginURL = "message";
+    private static String redirectToLoginURL = "redirect:/login";
 
     @Autowired
     public RegistrationController(UserService userService, AuthService authService) {

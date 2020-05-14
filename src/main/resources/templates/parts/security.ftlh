@@ -11,8 +11,8 @@ known = Session.SPRING_SECURITY_CONTEXT??
     >
 <#else>
     <#assign
-    name = "unknown"
-    role = "unknown"
+    name = ""
+    role = ""
     isAdmin = false
     >
 </#if>

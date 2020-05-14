@@ -23,4 +23,6 @@ public interface TicketDAO {
     boolean addExecutorToTicket(Ticket ticket);
 
     boolean deleteExecutorFromTicket(Long ticketId, Long executorId);
+
+    Ticket getTicketByNumber(Long ticketNumber);
 }

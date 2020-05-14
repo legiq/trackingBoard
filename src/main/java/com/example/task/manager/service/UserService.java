@@ -1,6 +1,6 @@
 package com.example.task.manager.service;
 
-import com.example.task.manager.aop.NonBlockedCheck;
+import com.example.task.manager.aop.UserNonBlockedCheck;
 import com.example.task.manager.dao.TicketDAO;
 import com.example.task.manager.dao.UserDAO;
 import com.example.task.manager.model.User;
@@ -45,27 +45,26 @@ public class UserService implements UserDetailsService {
                 Role.valueOf(authority.getAuthority()), true);
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public List<User> getAllUsers() {
         return userDAO.getAllUsers();
     }
 
-    @NonBlockedCheck
     public void addUser(User user) {
         userDAO.addUser(user);
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public User getUserById(Long id) {
         return userDAO.getUserById(id);
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public void updateUser(User user) {
         userDAO.updateUser(user);
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public boolean deleteUser(Long userId) {
 
         userDAO.deleteExecutor(userId);
@@ -76,7 +75,7 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public void disableUser(Long disableId) {
 
         User user = userDAO.getUserById(disableId);
@@ -85,7 +84,7 @@ public class UserService implements UserDetailsService {
         userDAO.updateUser(user);
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public void enableUser(Long disableId) {
 
         User user = userDAO.getUserById(disableId);
@@ -94,7 +93,7 @@ public class UserService implements UserDetailsService {
         userDAO.updateUser(user);
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public List<User> getAllNonAdminUsers() {
         return getAllUsers().stream()
                 .filter(u -> !u.getRole().equals(Role.Admin))

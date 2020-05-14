@@ -13,6 +13,7 @@ insertTicket: |
 addExecutorToTicket: insert into tickets_executors (ticket_id, executor_id) values (?,?)
 getStoryTickets: select * from tickets where story_id = ?
 deleteExecutorFromTicket: delete from tickets_executors where ticket_id = ? and executor_id = ?
+findTicketByNumber: select * from tickets where number = ?
 
 
 

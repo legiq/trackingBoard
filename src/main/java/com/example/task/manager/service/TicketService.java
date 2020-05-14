@@ -1,6 +1,6 @@
 package com.example.task.manager.service;
 
-import com.example.task.manager.aop.NonBlockedCheck;
+import com.example.task.manager.aop.UserNonBlockedCheck;
 import com.example.task.manager.dao.TicketDAO;
 import com.example.task.manager.dao.UserDAO;
 import com.example.task.manager.model.Ticket;
@@ -30,22 +30,22 @@ public class TicketService {
         this.ticketDAO = ticketDAO;
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public Ticket getTicketById(Long id) {
         return ticketDAO.getTicketById(id);
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public List<Ticket> getAllTickets() {
         return ticketDAO.getAllTickets();
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public List<Ticket> getAllStoryTickets(Ticket story) {
         return ticketDAO.getAllStoryTickets(story);
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public List<Ticket> getTicketsByFilter(String filterByType, String filterByCreator, String filterByTime) {
         return ticketDAO.getAllTickets().stream()
                 .filter(t -> filterByType.isEmpty() || t.getType().toString().equals(filterByType))
@@ -54,7 +54,7 @@ public class TicketService {
                 .collect(Collectors.toList());
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public void addTicket(User user, String label, String description, String executorLogin,
                           String type, String status, String components, Long storyId
     ) {
@@ -81,7 +81,7 @@ public class TicketService {
         }
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public void deleteTicket(Long ticketId) {
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
@@ -89,7 +89,7 @@ public class TicketService {
         ticketDAO.deleteTicket(ticket);
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public Ticket updateDescriptionAndGet(Long ticketId, String description) {
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
@@ -99,7 +99,7 @@ public class TicketService {
         return ticket;
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public void addExecutorToTicket(Long ticketId, String username) {
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
@@ -110,7 +110,7 @@ public class TicketService {
         ticketDAO.addExecutorToTicket(ticket);
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public void updateToNextStatus(Long ticketId) {
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
@@ -118,7 +118,7 @@ public class TicketService {
         ticketDAO.updateTicket(ticket);
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public void updateToTodoStatus(Long ticketId) {
 
         Ticket ticket = ticketDAO.getTicketById(ticketId);
@@ -126,16 +126,21 @@ public class TicketService {
         ticketDAO.updateTicket(ticket);
     }
 
-    @NonBlockedCheck
-    public void updateStoryId(Long ticketId, Long newStoryId) {
+    @UserNonBlockedCheck
+    public void updateStoryId(Long ticketNumber, Long newStoryId) {
 
-        Ticket subTicket = ticketDAO.getTicketById(ticketId);
+        Ticket subTicket = ticketDAO.getTicketByNumber(ticketNumber);
         subTicket.setStoryId(newStoryId);
         ticketDAO.updateTicket(subTicket);
     }
 
-    @NonBlockedCheck
+    @UserNonBlockedCheck
     public void deleteExecutorFromTicket(Long ticketId, Long executorId) {
         ticketDAO.deleteExecutorFromTicket(ticketId, executorId);
+    }
+
+    @UserNonBlockedCheck
+    public boolean isTicketNumberAppropriate(String ticketNumber) {
+        return ticketNumber.matches("tbj-[0-9]*");
     }
 }

@@ -11,16 +11,16 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class NonBlockedAspect {
+public class UserNonBlockedAspect {
 
     private UserDAO userDAO;
 
     @Autowired
-    public NonBlockedAspect(UserDAO userDAO) {
+    public UserNonBlockedAspect(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
-    @Before(value="@annotation(NonBlockedCheck)")
+    @Before(value="@annotation(com.example.task.manager.aop.UserNonBlockedCheck)")
     public void before(JoinPoint joinPoint) {
 
         User currentUser = userDAO.getUserById(

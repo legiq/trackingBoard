@@ -99,21 +99,24 @@ public class TicketController {
     @PostMapping("/addSubTicket")
     public String addSubTicket(
             @RequestParam Long ticketId,
-            @RequestParam Long subTicketId
+            @RequestParam String subTicketNumber
     ) {
 
-        ticketService.updateStoryId(subTicketId, ticketId);
+        if (ticketService.isTicketNumberAppropriate(subTicketNumber)) {
+            ticketService.updateStoryId(Long.valueOf(subTicketNumber.substring(4)), ticketId);
+        }
 
         return redirectToTicketURL + ticketId;
+
     }
 
     @PostMapping("/deleteSubTicket")
     public String deleteSubTicket(
             @RequestParam Long ticketId,
-            @RequestParam Long subTicketId
+            @RequestParam Long subTicketNumber
     ) {
 
-        ticketService.updateStoryId(subTicketId, 0L);
+        ticketService.updateStoryId(subTicketNumber, 0L);
 
         return redirectToTicketURL + ticketId;
     }

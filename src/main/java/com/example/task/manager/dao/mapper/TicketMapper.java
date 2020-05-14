@@ -41,6 +41,7 @@ public class TicketMapper implements RowMapper<Ticket> {
                 .map(Components::valueOf)
                 .collect(Collectors.toList()));
         ticket.setStoryId(resultSet.getLong("story_id"));
+        ticket.setNumber(resultSet.getLong("number"));
 
         return ticket;
     }

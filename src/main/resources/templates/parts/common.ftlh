@@ -7,19 +7,28 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
-        <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
               integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
               crossorigin="anonymous"/>
 
     </head>
     <body>
+    <style>
+        .btn-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            padding-left: 0;
+            padding-right: 0;
+            padding-bottom: 3px;
+            font-size: 6px;
+            text-align: center;
+        }
+    </style>
     <#include "navbar.ftlh">
     <div class="container mt-5">
         <#nested>
     </div>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
             integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
             crossorigin="anonymous"></script>

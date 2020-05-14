@@ -3,7 +3,7 @@
 
 <@c.page>
     <div class="list-group-item list-group-item-action ">
-        <div>Id: ${ticket.id}</div>
+        <div>tbj-${ticket.number}</div>
         <div>Label: ${ticket.label}</div>
         <div>Date: ${ticket.time}</div>
         <div>Creator: ${ticket.creator.username}</div>
@@ -13,9 +13,7 @@
     <div class="list-group-item list-group-item-action ">
         <#if ticket.creator.id = user.id || isAdmin>
             <form method="post">
-                <div>
-                    Description: <input type="text" name="description" value="${ticket.description}"/>
-                </div>
+                Description: <input type="text" name="description" value="${ticket.description}"/>
                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                 <button type="submit" class="btn btn-primary ml-2">Edit</button>
             </form>
@@ -27,25 +25,29 @@
         <div>Executors:</div>
         <#list ticket.executors as executor>
             <div class="form-group">
-                <div>${executor.username}</div>
+                ${executor.username}
                 <#if ticket.creator.id = user.id || isAdmin>
-                    <form method="post" action="/ticket/deleteExecutor">
-                        <input type="hidden" name="executorId" value="${executor.id}"/>
-                        <input type="hidden" name="ticketId" value="${ticket.id}"/>
-                        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                        <button type="submit" class="btn btn-primary ml-2">Delete</button>
-                    </form>
+                    <div class="float-left mr-1">
+                        <form method="post" action="/ticket/deleteExecutor">
+                            <input type="hidden" name="executorId" value="${executor.id}"/>
+                            <input type="hidden" name="ticketId" value="${ticket.id}"/>
+                            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                            <button type="submit" class="btn btn-primary btn-circle">❌</button>
+                        </form>
+                    </div>
                 </#if>
             </div>
         </#list>
-        <#if ticket.creator.id = user.id || isAdmin>
-            <form method="post" action="/ticket/add">
-                <input type="text" name="username" placeholder="Enter new executor"/>
-                <input type="hidden" name="ticketId" value="${ticket.id}"/>
-                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                <button type="submit" class="btn btn-primary ml-2">Add</button>
-            </form>
-        </#if>
+        <div>
+            <#if ticket.creator.id = user.id || isAdmin>
+                <form method="post" action="/ticket/add">
+                    <input type="text" name="username" placeholder="Enter new executor"/>
+                    <input type="hidden" name="ticketId" value="${ticket.id}"/>
+                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                    <button type="submit" class="btn btn-primary ml-2">Add</button>
+                </form>
+            </#if>
+        </div>
     </div>
     <#if ticket.type = "Story">
         <div class="list-group-item list-group-item-action ">
@@ -54,18 +56,20 @@
                 <div class="form-group">
                     <a href="/ticket/${subTicket.id}">${subTicket.label}</a>
                     <#if ticket.creator.id = user.id || isAdmin>
-                        <form method="post" action="/ticket/deleteSubTicket">
-                            <input type="hidden" name="ticketId" value="${ticket.id}"/>
-                            <input type="hidden" name="subTicketId" value="${subTicket.id}"/>
-                            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-                            <button type="submit" class="btn btn-primary">Delete</button>
-                        </form>
+                        <div class="float-left mr-1">
+                            <form method="post" action="/ticket/deleteSubTicket">
+                                <input type="hidden" name="ticketId" value="${ticket.id}"/>
+                                <input type="hidden" name="subTicketNumber" value="${subTicket.number}"/>
+                                <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                                <button type="submit" class="btn btn-primary btn-circle">❌</button>
+                            </form>
+                        </div>
                     </#if>
                 </div>
             </#list>
             <#if ticket.creator.id = user.id || isAdmin>
                 <form method="post" action="/ticket/addSubTicket">
-                    <input type="text" name="subTicketId" placeholder="Enter ticket id">
+                    <input type="text" name="subTicketNumber" placeholder="Enter ticket number">
                     <input type="hidden" name="ticketId" value="${ticket.id}"/>
                     <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     <button type="submit" class="btn btn-primary ml-2">Add</button>

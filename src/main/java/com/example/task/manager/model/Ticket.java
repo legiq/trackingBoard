@@ -25,6 +25,7 @@ public class Ticket {
     private List<Components> components;
     private Date time;
     private Long storyId;
+    private Long number;
 
     public Ticket(String label, String description, User creator,
                   List<User> executors, Type type, Status status,

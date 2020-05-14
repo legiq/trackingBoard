@@ -1,0 +1,1 @@
+ALTER SEQUENCE tickets_number_seq RESTART WITH 10;
