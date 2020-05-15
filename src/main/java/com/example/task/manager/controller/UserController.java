@@ -58,6 +58,8 @@ public class UserController {
         if (!user.getUsername().equals(username) && authService.isExists(username)) {
 
             model.addAttribute("message", "User with such login already exists");
+            model.addAttribute("targetUser", user);
+            model.addAttribute("roles", Role.values());
 
             return pageTemplate;
         }

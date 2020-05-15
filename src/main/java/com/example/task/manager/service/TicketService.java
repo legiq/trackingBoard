@@ -141,6 +141,11 @@ public class TicketService {
 
     @UserNonBlockedCheck
     public boolean isTicketNumberAppropriate(String ticketNumber) {
-        return ticketNumber.matches("tbj-[0-9]*");
+
+        List<Long> numbers = ticketDAO.getAllTickets().stream()
+                .map(Ticket::getNumber)
+                .collect(Collectors.toList());
+
+        return ticketNumber.matches("tbj-[0-9]*") && numbers.contains(Long.valueOf(ticketNumber.substring(4)));
     }
 }

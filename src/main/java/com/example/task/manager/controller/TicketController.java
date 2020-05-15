@@ -2,6 +2,7 @@ package com.example.task.manager.controller;
 
 import com.example.task.manager.model.Ticket;
 import com.example.task.manager.model.User;
+import com.example.task.manager.service.AuthService;
 import com.example.task.manager.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,13 +15,15 @@ import org.springframework.web.bind.annotation.*;
 public class TicketController {
 
     private TicketService ticketService;
+    private AuthService authService;
     private static final String redirectToTicketURL = "redirect:/ticket/";
     private static final String ticketAttribute = "ticket";
     private static final String ticketTemplate = "ticket";
 
     @Autowired
-    public TicketController(TicketService ticketService) {
+    public TicketController(TicketService ticketService, AuthService authService) {
         this.ticketService = ticketService;
+        this.authService = authService;
     }
 
     @GetMapping("{ticketId}")
@@ -58,7 +61,9 @@ public class TicketController {
             @RequestParam Long ticketId
     ) {
 
-        ticketService.addExecutorToTicket(ticketId, username);
+        if (authService.isExists(username)) {
+            ticketService.addExecutorToTicket(ticketId, username);
+        }
 
         return redirectToTicketURL + ticketId;
     }
