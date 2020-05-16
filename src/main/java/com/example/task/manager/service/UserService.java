@@ -5,7 +5,6 @@ import com.example.task.manager.dao.TicketDAO;
 import com.example.task.manager.dao.UserDAO;
 import com.example.task.manager.model.User;
 import com.example.task.manager.model.enums.Role;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +23,6 @@ public class UserService implements UserDetailsService {
     private UserDAO userDAO;
     private TicketDAO ticketDAO;
 
-    @Autowired
     public UserService(UserDAO userDAO, TicketDAO ticketDAO) {
         this.userDAO = userDAO;
         this.ticketDAO = ticketDAO;
@@ -95,7 +93,7 @@ public class UserService implements UserDetailsService {
 
     @UserNonBlockedCheck
     public List<User> getAllNonAdminUsers() {
-        return getAllUsers().stream()
+        return userDAO.getAllUsers().stream()
                 .filter(u -> !u.getRole().equals(Role.Admin))
                 .collect(Collectors.toList());
     }

@@ -5,7 +5,6 @@ import com.example.task.manager.model.Ticket;
 import com.example.task.manager.model.enums.Components;
 import com.example.task.manager.model.enums.Status;
 import com.example.task.manager.model.enums.Type;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +19,6 @@ public class TicketMapper implements RowMapper<Ticket> {
 
     private UserDAO userDAO;
 
-    @Autowired
     public TicketMapper (UserDAO user) {
         this.userDAO = user;
     }

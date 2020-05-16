@@ -7,7 +7,6 @@ import com.example.task.manager.model.Ticket;
 import com.example.task.manager.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +32,6 @@ public class UserDAOImpl implements UserDAO {
     private final String sqlDeleteAllUserTickets;
     private final String sqlDeleteTicketExecutors;
 
-    @Autowired
     public UserDAOImpl(DataSource dataSource, UserMapper userMapper) throws IOException {
 
         jdbcTemplate = new JdbcTemplate(dataSource);

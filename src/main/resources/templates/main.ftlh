@@ -20,6 +20,7 @@
            aria-controls="collapseExample">
             Add new ticket
         </a>
+        ${message!}
         <div class="collapse" id="collapseExample">
             <div class="form-group mt-3">
                 <form method="post" action="/main">

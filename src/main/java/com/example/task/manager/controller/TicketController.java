@@ -4,7 +4,6 @@ import com.example.task.manager.model.Ticket;
 import com.example.task.manager.model.User;
 import com.example.task.manager.service.AuthService;
 import com.example.task.manager.service.TicketService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +19,6 @@ public class TicketController {
     private static final String ticketAttribute = "ticket";
     private static final String ticketTemplate = "ticket";
 
-    @Autowired
     public TicketController(TicketService ticketService, AuthService authService) {
         this.ticketService = ticketService;
         this.authService = authService;

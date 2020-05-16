@@ -8,11 +8,11 @@ import com.example.task.manager.model.User;
 import com.example.task.manager.model.enums.Components;
 import com.example.task.manager.model.enums.Status;
 import com.example.task.manager.model.enums.Type;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,11 +23,12 @@ public class TicketService {
 
     private UserDAO userDAO;
     private TicketDAO ticketDAO;
+    private AuthService authService;
 
-    @Autowired
-    public TicketService(UserDAO userDAO, TicketDAO ticketDAO) {
+    public TicketService(UserDAO userDAO, TicketDAO ticketDAO, AuthService authService) {
         this.userDAO = userDAO;
         this.ticketDAO = ticketDAO;
+        this.authService = authService;
     }
 
     @UserNonBlockedCheck
@@ -55,17 +56,32 @@ public class TicketService {
     }
 
     @UserNonBlockedCheck
-    public void addTicket(User user, String label, String description, String executorLogin,
+    public boolean addTicket(User user, String label, String description, String executorLogin,
                           String type, String status, String components, Long storyId
     ) {
 
         List<User> executors = new ArrayList<>();
 
         for (String login : executorLogin.split(" ")) {
-            executors.add(userDAO.getUserByLogin(login));
+            if (authService.isExists(login)) {
+                executors.add(userDAO.getUserByLogin(login));
+            }
         }
 
-        if (label != null && !label.isEmpty() && user != null && !executors.isEmpty()) {
+        List<String> existingTypes = Stream.of(Type.values())
+                .map(Type::toString)
+                .collect(Collectors.toList());
+
+        List<String> existingComponents = Stream.of(Components.values())
+                .map(Components::toString)
+                .collect(Collectors.toList());
+
+        if (
+                label != null && !label.isEmpty()
+                && user != null && !executors.isEmpty()
+                && existingComponents.containsAll(Arrays.asList(components.split(" ")))
+                && existingTypes.contains(type)
+        ) {
 
             List<Components> componentsList = Stream.of(components.split(" "))
                     .map(Components::valueOf)
@@ -78,7 +94,10 @@ public class TicketService {
             ticket.setStoryId(storyId == 0L ? null : storyId);
 
             ticketDAO.addTicket(ticket);
+
+            return true;
         }
+        return false;
     }
 
     @UserNonBlockedCheck
