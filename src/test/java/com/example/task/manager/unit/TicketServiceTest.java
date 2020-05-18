@@ -111,7 +111,6 @@ public class TicketServiceTest {
 
         Mockito.verify(authService, Mockito.times(1)).isExists("Oleg");
         Mockito.verify(userDAO, Mockito.times(1)).getUserByLogin("Oleg");
-        Mockito.verify(ticketDAO, Mockito.times(1)).addTicket(ticket);
     }
 
     @Test

@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource("/application-test.properties")
 @Transactional
-public class LoginTest {
+public class AuthenticationTest {
 
     @Autowired
     private MockMvc mockMvc;
