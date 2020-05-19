@@ -2,7 +2,6 @@ package com.example.task.manager.controller;
 
 import com.example.task.manager.model.User;
 import com.example.task.manager.service.TicketService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +17,6 @@ public class MainController {
     private static final String mainTemplate = "main";
     private static final String redirectToMainURL = "redirect:/main";
 
-    @Autowired
     public MainController(TicketService ticketService) {
         this.ticketService = ticketService;
     }
@@ -63,7 +61,9 @@ public class MainController {
             Model model
     ) {
 
-        ticketService.addTicket(user, label, description, executorLogin, type, status, components, 0L);
+        if(!ticketService.addTicket(user, label, description, executorLogin, type, status, components, 0L)) {
+            model.addAttribute("message", "Wrong input!");
+        }
 
         model.addAttribute(ticketsAttribute, ticketService.getAllTickets());
 

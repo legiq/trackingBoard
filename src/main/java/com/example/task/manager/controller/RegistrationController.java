@@ -4,7 +4,6 @@ import com.example.task.manager.model.User;
 import com.example.task.manager.model.enums.Role;
 import com.example.task.manager.service.AuthService;
 import com.example.task.manager.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +16,8 @@ public class RegistrationController {
     private AuthService authService;
     private static String registrationTemplate = "registration";
     private static String messageAttribute = "message";
-    private static String redirectToLoginURL = "message";
+    private static String redirectToLoginURL = "redirect:/login";
 
-    @Autowired
     public RegistrationController(UserService userService, AuthService authService) {
         this.userService = userService;
         this.authService = authService;

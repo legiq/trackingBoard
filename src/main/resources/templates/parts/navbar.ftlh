@@ -13,9 +13,11 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/">Home</a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="/main">Tickets</a>
-            </li>
+            <#if name != "" && role != "">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/main">Tickets</a>
+                </li>
+            </#if>
             <#if isAdmin>
                 <li class="nav-item active">
                     <a class="nav-link" href="/user">Users</a>
@@ -24,6 +26,10 @@
         </ul>
         <div class="navbar-text mr-3">${name}</div>
         <div class="navbar-text mr-3">${role}</div>
-        <@l.logout />
+        <#if name = "" && role = "">
+            <a class="btn btn-primary" href="/login" role="button">Log in</a>
+        <#else>
+            <@l.logout />
+        </#if>
     </div>
 </nav>

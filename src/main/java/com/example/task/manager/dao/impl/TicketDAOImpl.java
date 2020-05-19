@@ -8,7 +8,6 @@ import com.example.task.manager.model.Ticket;
 import com.example.task.manager.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -35,8 +34,8 @@ public class TicketDAOImpl implements TicketDAO {
     private final String sqlAddExecutorToTicket;
     private final String sqlGetAllStoryTicket;
     private final String sqlDeleteExecutorFromTicket;
+    private final String sqlFindTicketByNumber;
 
-    @Autowired
     public TicketDAOImpl(DataSource dataSource, UserDAO userDAO) throws IOException {
 
         jdbcTemplate = new JdbcTemplate(dataSource);
@@ -58,6 +57,7 @@ public class TicketDAOImpl implements TicketDAO {
         sqlAddExecutorToTicket = ticketQuery.getAddExecutorToTicket();
         sqlGetAllStoryTicket = ticketQuery.getGetStoryTickets();
         sqlDeleteExecutorFromTicket = ticketQuery.getDeleteExecutorFromTicket();
+        sqlFindTicketByNumber = ticketQuery.getFindTicketByNumber();
     }
 
     @Override
@@ -142,5 +142,10 @@ public class TicketDAOImpl implements TicketDAO {
     @Override
     public boolean deleteExecutorFromTicket(Long ticketId, Long executorId) {
         return jdbcTemplate.update(sqlDeleteExecutorFromTicket, ticketId, executorId) > 0;
+    }
+
+    @Override
+    public Ticket getTicketByNumber(Long ticketNumber) {
+        return jdbcTemplate.queryForObject(sqlFindTicketByNumber, new Object[] { ticketNumber }, ticketMapper);
     }
 }

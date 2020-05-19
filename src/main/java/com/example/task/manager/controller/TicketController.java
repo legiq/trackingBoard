@@ -2,8 +2,8 @@ package com.example.task.manager.controller;
 
 import com.example.task.manager.model.Ticket;
 import com.example.task.manager.model.User;
+import com.example.task.manager.service.AuthService;
 import com.example.task.manager.service.TicketService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.*;
 public class TicketController {
 
     private TicketService ticketService;
+    private AuthService authService;
     private static final String redirectToTicketURL = "redirect:/ticket/";
     private static final String ticketAttribute = "ticket";
     private static final String ticketTemplate = "ticket";
 
-    @Autowired
-    public TicketController(TicketService ticketService) {
+    public TicketController(TicketService ticketService, AuthService authService) {
         this.ticketService = ticketService;
+        this.authService = authService;
     }
 
     @GetMapping("{ticketId}")
@@ -57,9 +58,7 @@ public class TicketController {
             @RequestParam String username,
             @RequestParam Long ticketId
     ) {
-
         ticketService.addExecutorToTicket(ticketId, username);
-
         return redirectToTicketURL + ticketId;
     }
 
@@ -99,10 +98,12 @@ public class TicketController {
     @PostMapping("/addSubTicket")
     public String addSubTicket(
             @RequestParam Long ticketId,
-            @RequestParam Long subTicketId
+            @RequestParam String subTicketNumber
     ) {
 
-        ticketService.updateStoryId(subTicketId, ticketId);
+        if (ticketService.isTicketNumberAppropriate(subTicketNumber)) {
+            ticketService.updateStoryId(Long.valueOf(subTicketNumber.substring(4)), ticketId);
+        }
 
         return redirectToTicketURL + ticketId;
     }
@@ -110,10 +111,10 @@ public class TicketController {
     @PostMapping("/deleteSubTicket")
     public String deleteSubTicket(
             @RequestParam Long ticketId,
-            @RequestParam Long subTicketId
+            @RequestParam Long subTicketNumber
     ) {
 
-        ticketService.updateStoryId(subTicketId, 0L);
+        ticketService.updateStoryId(subTicketNumber, 0L);
 
         return redirectToTicketURL + ticketId;
     }

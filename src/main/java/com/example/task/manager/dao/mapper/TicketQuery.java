@@ -20,5 +20,6 @@ public class TicketQuery {
     private String addExecutorToTicket;
     private String getStoryTickets;
     private String deleteExecutorFromTicket;
+    private String findTicketByNumber;
 
 }

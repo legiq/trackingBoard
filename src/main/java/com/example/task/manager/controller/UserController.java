@@ -4,7 +4,6 @@ import com.example.task.manager.model.User;
 import com.example.task.manager.model.enums.Role;
 import com.example.task.manager.service.AuthService;
 import com.example.task.manager.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +19,6 @@ public class UserController {
     private static final String redirectToPageURL = "redirect:/user/";
     private static final String pageTemplate = "userPage";
 
-    @Autowired
     public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
         this.authService = authService;
@@ -58,6 +56,8 @@ public class UserController {
         if (!user.getUsername().equals(username) && authService.isExists(username)) {
 
             model.addAttribute("message", "User with such login already exists");
+            model.addAttribute("targetUser", user);
+            model.addAttribute("roles", Role.values());
 
             return pageTemplate;
         }

@@ -1,6 +1,7 @@
 package com.example.task.manager.integrational;
 
 import com.example.task.manager.controller.MainController;
+import com.example.task.manager.dao.TicketDAO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,11 +12,13 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
 
 @SpringBootTest
@@ -32,6 +35,9 @@ public class MainControllerTest {
     @Autowired
     private MainController mainController;
 
+    @Autowired
+    private TicketDAO ticketDAO;
+
     @Test
     public void mainPageTest() throws Exception {
         this.mockMvc.perform(get("/main"))
@@ -45,7 +51,7 @@ public class MainControllerTest {
         this.mockMvc.perform(get("/main"))
                 .andDo(print())
                 .andExpect(authenticated())
-                .andExpect(xpath("//*[@id=\"ticket\"]").nodeCount(2));
+                .andExpect(xpath("//*[@id=\"ticket\"]").nodeCount(3));
     }
 
     @Test
@@ -69,9 +75,25 @@ public class MainControllerTest {
                 .with(csrf()))
                 .andDo(print())
                 .andExpect(authenticated())
-                .andExpect(xpath("//*[@id=\"ticket\"]").nodeCount(3))
+                .andExpect(xpath("//*[@id=\"ticket\"]").nodeCount(4))
                 .andExpect(xpath("//*[@id=\"ticket\"][@data-id=1]").exists())
                 .andExpect(xpath("//*[@id=\"ticket\"][@data-id=2]").exists())
+                .andExpect(xpath("//*[@id=\"ticket\"][@data-id=3]").exists())
                 .andExpect(xpath("//*[@id=\"ticket\"][@data-id=10]").exists());
+    }
+
+    @Test
+    public void deleteTest() throws Exception {
+
+        assertEquals(3, ticketDAO.getAllTickets().size());
+
+        this.mockMvc.perform(post("/delete")
+                .param("ticketId", "1")
+                .with(csrf()))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().is3xxRedirection());
+
+        assertEquals(2, ticketDAO.getAllTickets().size());
     }
 }

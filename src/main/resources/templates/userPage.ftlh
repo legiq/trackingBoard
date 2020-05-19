@@ -36,4 +36,5 @@
             <button type="submit">Unblock</button>
         </form>
     </#if>
+    ${message!}
 </@c.page>
