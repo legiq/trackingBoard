@@ -37,11 +37,9 @@
                         <input type="text" name="type" placeholder="Enter type"/>
                     </div>
                     <div class="form-group float-left">
-                        <input type="text" name="status" placeholder="Enter status"/>
-                    </div>
-                    <div class="form-group float-left">
                         <input type="text" name="components" placeholder="Enter components"/>
                     </div>
+                    <input type="hidden" name="status" value="ToDo"/>
                     <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary ml-2">Save</button>

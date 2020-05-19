@@ -144,15 +144,16 @@ public class TicketServiceTest {
     public void addExecutorToTicketTest() {
 
         Ticket ticket = createTestList().get(0);
-        User user = new User(1L, "Oleg", "password", Role.Admin, true);
+        User user = createTestList().get(1).getCreator();
 
+        Mockito.when(authService.isExists("creator")).thenReturn(true);
         Mockito.when(ticketDAO.getTicketById(1L)).thenReturn(ticket);
-        Mockito.when(userDAO.getUserByLogin("Oleg")).thenReturn(user);
+        Mockito.when(userDAO.getUserByLogin("creator")).thenReturn(user);
 
-        ticketService.addExecutorToTicket(1L, "Oleg");
+        ticketService.addExecutorToTicket(1L, "creator");
 
-        Mockito.verify(ticketDAO, Mockito.times(1)).getTicketById(1L);
-        Mockito.verify(userDAO, Mockito.times(1)).getUserByLogin("Oleg");
+        Mockito.verify(ticketDAO, Mockito.times(2)).getTicketById(1L);
+        Mockito.verify(userDAO, Mockito.times(1)).getUserByLogin("creator");
         Mockito.verify(ticketDAO, Mockito.times(1)).addExecutorToTicket(ticket);
     }
 
@@ -185,7 +186,7 @@ public class TicketServiceTest {
     @Test
     public void deleteExecutorFromTicketTest() {
 
-        ticketService.deleteExecutorFromTicket(1L,2L);
+        ticketService.deleteExecutorFromTicket(1L, 2L);
 
         Mockito.verify(ticketDAO, Mockito.times(1))
                 .deleteExecutorFromTicket(1L, 2L);
@@ -204,6 +205,21 @@ public class TicketServiceTest {
         assertFalse(actual2);
         assertFalse(actual3);
         Mockito.verify(ticketDAO, Mockito.times(3)).getAllTickets();
+    }
+
+    @Test
+    public void isAlreadyExecutorTest() {
+
+        Mockito.when(ticketDAO.getTicketById(1L)).thenReturn(createTestList().get(0));
+
+        boolean actual1 = ticketService.isAlreadyExecutor("executor", 1L);
+        boolean actual2 = ticketService.isAlreadyExecutor("creator", 1L);
+        boolean actual3 = ticketService.isAlreadyExecutor("sdasdas", 1L);
+
+        assertTrue(actual1);
+        assertFalse(actual2);
+        assertFalse(actual3);
+        Mockito.verify(ticketDAO, Mockito.times(3)).getTicketById(1L);
     }
 
     private List<Ticket> createTestList() {

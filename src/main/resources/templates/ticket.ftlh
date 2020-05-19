@@ -11,7 +11,7 @@
         <div>Status: ${ticket.status}</div>
     </div>
     <div class="list-group-item list-group-item-action ">
-        <#if ticket.creator.id = user.id || isAdmin>
+        <#if (ticket.creator.id = user.id || isAdmin) && ticket.status != "Done">
             <form method="post">
                 Description: <input type="text" name="description" value="${ticket.description}"/>
                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
@@ -26,7 +26,7 @@
         <#list ticket.executors as executor>
             <div class="form-group">
                 ${executor.username}
-                <#if ticket.creator.id = user.id || isAdmin>
+                <#if (ticket.creator.id = user.id || isAdmin) && ticket.status != "Done">
                     <div class="float-left mr-1">
                         <form method="post" action="/ticket/deleteExecutor">
                             <input type="hidden" name="executorId" value="${executor.id}"/>
@@ -39,7 +39,7 @@
             </div>
         </#list>
         <div>
-            <#if ticket.creator.id = user.id || isAdmin>
+            <#if (ticket.creator.id = user.id || isAdmin) && ticket.status != "Done">
                 <form method="post" action="/ticket/add">
                     <input type="text" name="username" placeholder="Enter new executor"/>
                     <input type="hidden" name="ticketId" value="${ticket.id}"/>
@@ -55,7 +55,7 @@
             <#list subTickets as subTicket>
                 <div class="form-group">
                     <a href="/ticket/${subTicket.id}">${subTicket.label}</a>
-                    <#if ticket.creator.id = user.id || isAdmin>
+                    <#if (ticket.creator.id = user.id || isAdmin) && ticket.status != "Done">
                         <div class="float-left mr-1">
                             <form method="post" action="/ticket/deleteSubTicket">
                                 <input type="hidden" name="ticketId" value="${ticket.id}"/>
@@ -67,7 +67,7 @@
                     </#if>
                 </div>
             </#list>
-            <#if ticket.creator.id = user.id || isAdmin>
+            <#if (ticket.creator.id = user.id || isAdmin) && ticket.status != "Done">
                 <form method="post" action="/ticket/addSubTicket">
                     <input type="text" name="subTicketNumber" placeholder="Enter ticket number">
                     <input type="hidden" name="ticketId" value="${ticket.id}"/>

@@ -121,17 +121,19 @@ public class TicketService {
     @UserNonBlockedCheck
     public void addExecutorToTicket(Long ticketId, String username) {
 
-        Ticket ticket = ticketDAO.getTicketById(ticketId);
-        List<User> executors = ticket.getExecutors();
-        executors.add(userDAO.getUserByLogin(username));
-        ticket.setExecutors(executors);
+        if(authService.isExists(username) && !isAlreadyExecutor(username, ticketId)) {
 
-        ticketDAO.addExecutorToTicket(ticket);
+            Ticket ticket = ticketDAO.getTicketById(ticketId);
+            List<User> executors = ticket.getExecutors();
+            executors.add(userDAO.getUserByLogin(username));
+            ticket.setExecutors(executors);
+
+            ticketDAO.addExecutorToTicket(ticket);
+        }
     }
 
     @UserNonBlockedCheck
     public void updateToNextStatus(Long ticketId) {
-
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         ticket.setStatus(ticket.getStatus().getNextStatus());
         ticketDAO.updateTicket(ticket);
@@ -139,7 +141,6 @@ public class TicketService {
 
     @UserNonBlockedCheck
     public void updateToTodoStatus(Long ticketId) {
-
         Ticket ticket = ticketDAO.getTicketById(ticketId);
         ticket.setStatus(Status.ToDo);
         ticketDAO.updateTicket(ticket);
@@ -147,10 +148,9 @@ public class TicketService {
 
     @UserNonBlockedCheck
     public void updateStoryId(Long ticketNumber, Long newStoryId) {
-
-        Ticket subTicket = ticketDAO.getTicketByNumber(ticketNumber);
-        subTicket.setStoryId(newStoryId);
-        ticketDAO.updateTicket(subTicket);
+            Ticket subTicket = ticketDAO.getTicketByNumber(ticketNumber);
+            subTicket.setStoryId(newStoryId);
+            ticketDAO.updateTicket(subTicket);
     }
 
     @UserNonBlockedCheck
@@ -166,5 +166,13 @@ public class TicketService {
                 .collect(Collectors.toList());
 
         return ticketNumber.matches("tbj-[0-9]*") && numbers.contains(Long.valueOf(ticketNumber.substring(4)));
+    }
+
+    public boolean isAlreadyExecutor(String username, Long ticketId) {
+        List<String> executorsNames = ticketDAO.getTicketById(ticketId).getExecutors().stream()
+                .map(User::getUsername)
+                .collect(Collectors.toList());
+
+        return executorsNames.contains(username);
     }
 }

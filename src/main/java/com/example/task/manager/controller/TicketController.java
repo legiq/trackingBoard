@@ -58,11 +58,7 @@ public class TicketController {
             @RequestParam String username,
             @RequestParam Long ticketId
     ) {
-
-        if (authService.isExists(username)) {
-            ticketService.addExecutorToTicket(ticketId, username);
-        }
-
+        ticketService.addExecutorToTicket(ticketId, username);
         return redirectToTicketURL + ticketId;
     }
 
@@ -110,7 +106,6 @@ public class TicketController {
         }
 
         return redirectToTicketURL + ticketId;
-
     }
 
     @PostMapping("/deleteSubTicket")
